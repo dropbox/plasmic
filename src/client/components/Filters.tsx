@@ -2,7 +2,7 @@ import * as React from "react";
 import { RenderLayer } from "../core";
 import { TodoScope } from "../types";
 
-export class TodoFilter extends RenderLayer<TodoScope> {
+export class Filter extends RenderLayer<TodoScope> {
   onSubmit = e => {
     e.preventDefault();
   };

@@ -2,7 +2,7 @@ import * as React from "react";
 import { RenderLayer } from "../core";
 import { TodoScope } from "../types";
 
-export class TodoInput extends RenderLayer<TodoScope> {
+export class Input extends RenderLayer<TodoScope> {
   onSubmit = e => {
     this.triggers.todos.addTodo(e.target.todoLabel.value);
     e.preventDefault();

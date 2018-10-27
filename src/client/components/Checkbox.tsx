@@ -2,7 +2,7 @@ import * as React from "react";
 import { RenderLayer } from "../core";
 import { TodoScope, Completed, Id } from "../types";
 
-export class TodoCheckbox extends RenderLayer<
+export class Checkbox extends RenderLayer<
   TodoScope,
   { id: Id; completed: Completed }
 > {

@@ -7,9 +7,9 @@ import {
   LayerContext
 } from "../core";
 import { TodoScope, TodoStrings } from "../types";
-import { TodoInput } from "./Input";
-import { TodoList } from "./List";
-import { TodoFilter } from "./Filters";
+import { Input } from "./Input";
+import { List } from "./List";
+import { Filter } from "./Filters";
 import { FilterLayer } from "../logic/Filter";
 import { ListLayer } from "../logic/List";
 import { IdLayer } from "../logic/Id";
@@ -56,9 +56,9 @@ export class App extends React.Component {
           logic: this.logic
         }}
       >
-        <TodoInput />
-        <TodoList />
-        <TodoFilter />
+        <Input />
+        <List />
+        <Filter />
       </LayerContext.Provider>
     );
   }
