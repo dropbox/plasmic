@@ -4,7 +4,8 @@ import {
   Logic,
   CompleteLogic,
   extractLogic,
-  LayerContext
+  LayerContext,
+  Layer
 } from "../core";
 import { TodoScope, TodoStrings } from "../types";
 import { Input } from "./Input";
@@ -14,7 +15,7 @@ import { FilterLayer } from "../logic/Filter";
 import { ListLayer } from "../logic/List";
 import { IdLayer } from "../logic/Id";
 
-export class App extends React.Component {
+export class App extends React.Component implements Layer<TodoScope> {
   private container: StatusContainer<TodoScope>;
   private logic: Logic<TodoScope>;
 
