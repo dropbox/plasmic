@@ -1,4 +1,5 @@
-import { Feature, ScopeStrings, createLogicScaffold } from "./core";
+import { Feature, ScopeStrings } from "./core/types";
+import { createLogicScaffold } from "./core/logic_layer";
 
 export type Id = number;
 export type Label = string;

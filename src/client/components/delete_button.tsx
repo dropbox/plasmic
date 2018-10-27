@@ -1,5 +1,5 @@
 import * as React from "react";
-import { RenderLayer } from "../core";
+import { RenderLayer } from "../core/render_layer";
 import { TodoScope, Id } from "../types";
 
 export class DeleteButton extends RenderLayer<TodoScope, { id: Id }> {
