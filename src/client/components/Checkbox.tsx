@@ -1,5 +1,5 @@
 import * as React from "react";
-import { RenderLayer } from "../core/render_layer";
+import { RenderLayer } from "../core";
 import { TodoScope, Completed, Id } from "../types";
 
 export class Checkbox extends RenderLayer<

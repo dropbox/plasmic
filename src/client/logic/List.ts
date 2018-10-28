@@ -1,4 +1,4 @@
-import { LogicLayer } from "../core/logic_layer";
+import { LogicLayer } from "../core";
 import {
   TodoScope,
   todos,

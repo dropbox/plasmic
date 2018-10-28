@@ -1,8 +1,8 @@
 import * as React from "react";
-import { RenderLayer } from "../core/render_layer";
+import { RenderLayer } from "../core";
 import { TodoScope } from "../types";
-import { Checkbox } from "./checkbox";
-import { DeleteButton } from "./delete_button";
+import { Checkbox } from "./Checkbox";
+import { DeleteButton } from "./DeleteButton";
 
 export class List extends RenderLayer<TodoScope> {
   render() {

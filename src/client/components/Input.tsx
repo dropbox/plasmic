@@ -1,5 +1,5 @@
 import * as React from "react";
-import { RenderLayer } from "../core/render_layer";
+import { RenderLayer } from "../core";
 import { TodoScope } from "../types";
 
 export class Input extends RenderLayer<TodoScope> {

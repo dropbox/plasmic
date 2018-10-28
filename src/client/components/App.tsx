@@ -1,17 +1,19 @@
 import * as React from "react";
+import {
+  StatusContainer,
+  Logic,
+  CompleteLogic,
+  extractLogic,
+  LayerContext,
+  Layer
+} from "../core";
 import { TodoScope, TodoStrings } from "../types";
-import { Input } from "./input";
-import { List } from "./list";
-import { Filter } from "./filters";
-import { FilterLayer } from "../logic/filter";
-import { ListLayer } from "../logic/list";
-import { IdLayer } from "../logic/id";
-import { Layer } from "../core/layer";
-import { StatusContainer } from "../core/status_container";
-import { Logic } from "../core/types";
-import { CompleteLogic } from "../core/complete_logic";
-import { extractLogic } from "../core/logic_layer";
-import { LayerContext } from "../core/render_layer";
+import { Input } from "./Input";
+import { List } from "./List";
+import { Filter } from "./Filters";
+import { FilterLayer } from "../logic/Filter";
+import { ListLayer } from "../logic/List";
+import { IdLayer } from "../logic/Id";
 
 export class App extends React.Component implements Layer<TodoScope> {
   private container: StatusContainer<TodoScope>;
@@ -28,7 +30,7 @@ export class App extends React.Component implements Layer<TodoScope> {
   constructor(props) {
     super(props);
 
-    this.container = new StatusContainer<TodoScope>(TodoStrings, {
+    this.container = new StatusContainer(TodoStrings, {
       todos: {
         allTodos: [],
         filteredTodos: [],
@@ -41,7 +43,7 @@ export class App extends React.Component implements Layer<TodoScope> {
       this.forceUpdate();
     });
 
-    this.logic = new CompleteLogic<TodoScope>(
+    this.logic = new CompleteLogic(
       TodoStrings,
       extractLogic([new FilterLayer(), new ListLayer(), new IdLayer()], this)
     );
