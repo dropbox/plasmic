@@ -1,4 +1,4 @@
-import { LogicLayer } from "../core";
+import { LogicLayer } from "../core/logic_layer";
 import { TodoScope, todos } from "../types";
 
 export class IdLayer extends LogicLayer<TodoScope> {

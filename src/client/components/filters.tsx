@@ -1,5 +1,5 @@
 import * as React from "react";
-import { RenderLayer } from "../core";
+import { RenderLayer } from "../core/render_layer";
 import { TodoScope } from "../types";
 
 export class Filter extends RenderLayer<TodoScope> {
