@@ -4,7 +4,7 @@
   "description": "Base app using express, sqlite3, react, typescript, react, async/await, and webpack",
   "main": "server.js",
   "scripts": {
-    "build": "webpack --config src/client/webpack.config.js",
+    "build": "webpack --config src/todos/webpack.config.js",
     "start": "npm run build"
   },
   "dependencies": {
