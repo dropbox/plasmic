@@ -2,10 +2,15 @@ export type Value = any;
 
 export type Action<T extends any[] = any[]> = (...args: T) => void;
 
-export type Service<T extends any[] = any[], U extends Value = Value> = (
+export type Utility<T extends any[] = any[], U extends Value = Value> = (
   ...args: T
 ) => U;
+
 type ActionArgs<T> = T extends Action<infer U> ? U : never;
+
+type UtilityArgs<T> = T extends Utility<infer U> ? U : never;
+
+type UtilityReturn<T> = T extends Utility<infer U, infer V> ? V : never;
 
 export type ActionShape = {
   [key: string]: Action;
@@ -15,20 +20,28 @@ export type StateShape = {
   [key: string]: Value;
 };
 
+export type UtilityShape = {
+  [key: string]: Utility;
+};
+
 export type Feature<
   A extends ActionShape = ActionShape,
-  S extends StateShape = StateShape
+  S extends StateShape = StateShape,
+  U extends UtilityShape = UtilityShape
 > = {
   actions: A;
   state: S;
+  utilities: U;
 };
 
 export type FeatureStrings<
   A extends ActionShape = ActionShape,
-  S extends StateShape = StateShape
+  S extends StateShape = StateShape,
+  U extends UtilityShape = UtilityShape
 > = {
   actions: (keyof A)[];
   state: (keyof S)[];
+  utilities: (keyof U)[];
 };
 
 export type Scope = {
@@ -88,41 +101,67 @@ export type PartialLogic<S extends Scope> = {
   observers?: Partial<Observers<S>>;
 };
 
-export type LogicDecorator<
+export type ObserverDecorator<F, Feat extends Feature> = ((
+  comment?: {
+    feature: F;
+    signature: (previousState: Feat["state"]) => void;
+  }
+) => (t: any, m: string) => void);
+
+export type ActionDecorator<F, A, Feat extends Feature, Act extends Action> = ((
+  comment?: {
+    feature: F;
+    action: A;
+    signature: (previousState: Feat["state"], ...a: ActionArgs<Act>) => void;
+  }
+) => (t: any, m: string) => void);
+
+export type ReducerDecorator<
   F,
   A,
   V,
-  Val extends Value,
-  Act extends Action = null,
-  Ret extends Value = void
+  Act extends Action,
+  Val extends Value
 > = ((
   comment?: {
     feature: F;
     action: A;
     status: V;
-    signature: Act extends null
-      ? (value: Val) => Ret
-      : (value: Val, ...a: ActionArgs<Act>) => Ret;
+    signature: (currentValue: Val, ...a: ActionArgs<Act>) => Val;
+  }
+) => (t: any, m: string) => void);
+
+export type UtilityDecorator<F, U, Util extends Utility> = ((
+  comment?: {
+    feature: F;
+    utility: U;
+    signature: (...a: UtilityArgs<Util>) => UtilityReturn<Util>;
   }
 ) => (t: any, m: string) => void);
 
 export type LogicScaffold<S extends Scope> = {
   [F in keyof S]: {
-    observe: LogicDecorator<F, null, null, S[F]["state"]>;
+    observe: ObserverDecorator<F, S[F]>;
     on: {
       [A in keyof S[F]["actions"]]: {
-        observe: LogicDecorator<F, A, null, S[F]["state"], S[F]["actions"][A]>;
+        observe: ActionDecorator<F, A, S[F], S[F]["actions"][A]>;
         update: {
-          [V in keyof S[F]["state"]]: LogicDecorator<
+          [V in keyof S[F]["state"]]: ReducerDecorator<
             F,
             A,
             V,
-            S[F]["state"][V],
             S[F]["actions"][A],
             S[F]["state"][V]
           >
         };
       }
+    };
+    handle: {
+      [U in keyof S[F]["utilities"]]: UtilityDecorator<
+        F,
+        U,
+        S[F]["utilities"][U]
+      >
     };
   }
 };
