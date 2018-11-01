@@ -37,13 +37,11 @@ export type DogApiScope = {
 export const dogapiStrings: ScopeStrings<DogApiScope> = {
   dog: {
     actions: ["updateDog"],
-    state: ["currentDog"],
-    utilities: []
+    state: ["currentDog"]
   },
   api: {
     actions: ["getDog", "setError"],
-    state: ["error"],
-    utilities: []
+    state: ["error"]
   }
 };
 
