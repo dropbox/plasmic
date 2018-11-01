@@ -10,7 +10,7 @@ import {
 } from "../types";
 
 export class ListLayer extends LogicLayer<TodoScope> {
-  @todos.observeOn.addTodo.update.allTodos()
+  @todos.on.addTodo.update.allTodos()
   updateOnAdd(allTodos: Todo[], label: Label) {
     return [
       ...allTodos,
@@ -22,18 +22,18 @@ export class ListLayer extends LogicLayer<TodoScope> {
     ];
   }
 
-  @todos.observeOn.deleteTodo.update.allTodos()
+  @todos.on.deleteTodo.update.allTodos()
   updateOnDelete(allTodos: Todo[], id: Id) {
     return allTodos.filter(todo => todo.id !== id);
   }
 
-  @todos.observeOn.refilter.update.filteredTodos()
+  @todos.on.refilter.update.filteredTodos()
   updateFilteredOnChange() {
     const filter = this.status.todos.currentFilter;
     return this.filterTodos(filter);
   }
 
-  @todos.observeOn.toggleCompleted.update.allTodos()
+  @todos.on.toggleCompleted.update.allTodos()
   toggleCompleted(allTodos: Todo[], id: Id) {
     return allTodos.map(todo => {
       if (todo.id !== id) {
@@ -53,7 +53,7 @@ export class ListLayer extends LogicLayer<TodoScope> {
       previous.allTodos !== this.status.todos.allTodos ||
       previous.currentFilter !== this.status.todos.currentFilter
     ) {
-      this.triggers.todos.refilter();
+      this.actions.todos.refilter();
     }
   }
 

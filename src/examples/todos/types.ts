@@ -4,6 +4,7 @@ import { createLogicScaffold } from "../../core/logic_layer";
 export type Id = number;
 export type Label = string;
 export type Completed = boolean;
+export type Filter = Completed | null;
 
 export type Todo = {
   id: Id;
@@ -16,13 +17,13 @@ export type TodoFeature = Feature<
     addTodo: (label: Label) => void;
     toggleCompleted: (id: Id) => void;
     deleteTodo: (id: Id) => void;
-    updateFilter: (foo: Completed | null) => void;
+    updateFilter: (filter: Filter) => void;
     refilter: () => void;
   },
   {
     allTodos: Todo[];
     filteredTodos: Todo[];
-    currentFilter: Completed | null;
+    currentFilter: Filter;
     nextId: number;
   }
 >;

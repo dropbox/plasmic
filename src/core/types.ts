@@ -1,8 +1,11 @@
-import { any } from "prop-types";
-
 export type Value = any;
 
-export type Action = (...args: any[]) => void;
+export type Action<T extends any[] = any[]> = (...args: T) => void;
+
+export type Service<T extends any[] = any[], U extends Value = Value> = (
+  ...args: T
+) => U;
+type ActionArgs<T> = T extends Action<infer U> ? U : never;
 
 export type ActionShape = {
   [key: string]: Action;
@@ -52,10 +55,10 @@ export type Observers<S extends Scope> = {
   [F in keyof S]: Observer<S[F]["state"]>
 };
 
-export type Reducer<
-  V extends Value = Value,
-  A extends Action = Action
-> = A extends (v: V, ...a: any[]) => V ? V : never;
+export type Reducer<V extends Value = Value, A extends Action = Action> = (
+  v: V,
+  ...a: ActionArgs<A>
+) => V;
 
 export type Reducers<S extends Scope> = {
   [F in keyof S]: {
@@ -76,34 +79,47 @@ export type PartialReducers<S extends Scope> = {
 export type Logic<S extends Scope> = {
   reducers: Reducers<S>;
   actions: Actions<S>;
-  features: Observers<S>;
+  observers: Observers<S>;
 };
 
 export type PartialLogic<S extends Scope> = {
   reducers?: PartialReducers<S>;
   actions?: PartialActions<S>;
-  features?: Partial<Observers<S>>;
+  observers?: Partial<Observers<S>>;
 };
 
-export type LogicDecorator<V extends Value, A extends Action = null> = ((
-  context?: {
-    value: V;
+export type LogicDecorator<
+  F,
+  A,
+  V,
+  Val extends Value,
+  Act extends Action = null,
+  Ret extends Value = void
+> = ((
+  comment?: {
+    feature: F;
     action: A;
+    status: V;
+    signature: Act extends null
+      ? (value: Val) => Ret
+      : (value: Val, ...a: ActionArgs<Act>) => Ret;
   }
-) => (target: any, methodName: string) => void);
+) => (t: any, m: string) => void);
 
 export type LogicScaffold<S extends Scope> = {
   [F in keyof S]: {
-    observe: LogicDecorator<S[F]["state"]>;
-    observeOn: {
-      [A in keyof S[F]["actions"]]: LogicDecorator<
-        S[F]["state"],
-        S[F]["actions"][A]
-      > & {
+    observe: LogicDecorator<F, null, null, S[F]["state"]>;
+    on: {
+      [A in keyof S[F]["actions"]]: {
+        observe: LogicDecorator<F, A, null, S[F]["state"], S[F]["actions"][A]>;
         update: {
           [V in keyof S[F]["state"]]: LogicDecorator<
+            F,
+            A,
+            V,
             S[F]["state"][V],
-            S[F]["actions"][A]
+            S[F]["actions"][A],
+            S[F]["state"][V]
           >
         };
       }

@@ -4,7 +4,7 @@ import { StatusContainer, SubscriptionHandle } from "./status_container";
 import { Logic, ScopeStrings, Status, Scope } from "./types";
 import { CompleteLogic } from "./complete_logic";
 import { extractLogic, LogicLayer } from "./logic_layer";
-import { LayerContext } from "./component_layer";
+import { LayerContext } from "./display_layer";
 
 export type ContainerLayerProps<S extends Scope> = {
   scopeStrings: ScopeStrings<S>;
@@ -23,7 +23,7 @@ export class ContainerLayer<S extends Scope>
     return this.container.getStatus();
   }
 
-  get triggers() {
+  get actions() {
     return this.container.getActions(this.logic);
   }
 

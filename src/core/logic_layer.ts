@@ -18,8 +18,8 @@ function createExtractLogicDecorator<S extends Scope>(
         status: {
           get: () => seed.status
         },
-        triggers: {
-          get: () => seed.triggers
+        actions: {
+          get: () => seed.actions
         }
       });
 
@@ -33,17 +33,17 @@ function createExtractLogicDecorator<S extends Scope>(
 function createFeatureScaffold(strings, feature) {
   return {
     observe: createExtractLogicDecorator((method, base) => {
-      base.features = base.features || {};
+      base.observers = base.observers || {};
 
       return {
         ...base,
-        features: {
-          ...(base.features as any),
+        observers: {
+          ...(base.observers as any),
           [feature]: method
         }
       };
     }),
-    observeOn: strings[feature].actions.reduce(
+    on: strings[feature].actions.reduce(
       (acc, action) => ({
         ...(acc as any),
         [action]: createActionScaffold(strings, feature, action)
@@ -54,8 +54,8 @@ function createFeatureScaffold(strings, feature) {
 }
 
 function createActionScaffold(strings, feature, action) {
-  return Object.assign(
-    createExtractLogicDecorator((method, base) => {
+  return {
+    observe: createExtractLogicDecorator((method, base) => {
       base.actions = base.actions || {};
       base.actions[feature] = base.actions[feature] || {};
 
@@ -70,16 +70,14 @@ function createActionScaffold(strings, feature, action) {
         }
       };
     }),
-    {
-      update: strings[feature].state.reduce(
-        (acc, state) => ({
-          ...(acc as any),
-          [state]: createReducerScaffold(strings, feature, action, state)
-        }),
-        {}
-      )
-    }
-  );
+    update: strings[feature].state.reduce(
+      (acc, state) => ({
+        ...(acc as any),
+        [state]: createReducerScaffold(strings, feature, action, state)
+      }),
+      {}
+    )
+  };
 }
 
 function createReducerScaffold(strings, feature, action, state) {
@@ -90,7 +88,7 @@ function createReducerScaffold(strings, feature, action, state) {
       (base.reducers[feature] as any)[action] || {};
 
     return {
-      ...(base.reducers as any),
+      ...(base as any),
       reducers: {
         [feature]: {
           ...(base.reducers[feature] as any),

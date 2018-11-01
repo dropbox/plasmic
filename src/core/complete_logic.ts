@@ -16,7 +16,7 @@ import {
 export class CompleteLogic<S extends Scope> implements Logic<S> {
   reducers: Reducers<S>;
   actions: Actions<S>;
-  features: Observers<S>;
+  observers: Observers<S>;
 
   static noop() {}
 
@@ -101,13 +101,13 @@ export class CompleteLogic<S extends Scope> implements Logic<S> {
   }
 
   private completeFeatures(partials: PartialLogic<S>[]) {
-    this.features = Object.keys(this.strings).reduce(
+    this.observers = Object.keys(this.strings).reduce(
       (acc, feature) => ({
         ...(acc as any),
         [feature]: partials
           .filter(partial => {
             try {
-              return !!partial.features[feature];
+              return !!partial.observers[feature];
             } catch {
               return false;
             }
@@ -115,7 +115,7 @@ export class CompleteLogic<S extends Scope> implements Logic<S> {
           .reduce<Observer>((acc, partial) => {
             return (s: StateShape) => {
               acc(s);
-              partial.features![feature]!(s);
+              partial.observers![feature]!(s);
             };
           }, CompleteLogic.noop)
       }),

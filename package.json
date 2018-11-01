@@ -4,8 +4,8 @@
   "description": "Base app using express, sqlite3, react, typescript, react, async/await, and webpack",
   "main": "server.js",
   "scripts": {
-    "build": "webpack --config src/examples/todos/webpack.config.js",
-    "start": "npm run build"
+    "build:todos": "webpack --config src/examples/todos/webpack.config.js",
+    "build:dog_api": "webpack --config src/examples/dog_api/webpack.config.js"
   },
   "dependencies": {
     "awesome-typescript-loader": "^3.1.2",
@@ -15,7 +15,7 @@
     "sequelize": "^3.30.4",
     "source-map-loader": "^0.2.1",
     "sqlite3": "^3.1.8",
-    "typescript": "^2.2.2",
+    "typescript": "^3.0.0",
     "webpack": "^2.4.1",
     "@types/express": "^4.0.35",
     "@types/react": "^16.4.18",

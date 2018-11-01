@@ -2,5 +2,5 @@ import { Scope, Status, Actions } from "./types";
 
 export class Layer<S extends Scope> {
   readonly status: Status<S>;
-  readonly triggers: Actions<S>;
+  readonly actions: Actions<S>;
 }

@@ -48,8 +48,8 @@ export class StatusContainer<S extends Scope> {
                 )
               };
 
-              logic.actions[feature][action](...values);
-              logic.features[feature](previous[feature]);
+              logic.actions[feature][action](previous, ...values);
+              logic.observers[feature](previous[feature]);
 
               this.updateSubscribers();
             }
