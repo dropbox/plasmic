@@ -6,26 +6,35 @@ export type Dog = {
   url: string;
 };
 
+export type DogList = {
+  [key: string]: string[];
+};
+
 export type DogResponse = {
-  message: string;
+  message: string | DogList;
 };
 
 export type DogFeature = Feature<
   {
     updateDog: (newDog: Dog) => void;
+    updateDogList: (list: DogList) => void;
   },
   {
     currentDog: Dog | null;
+    dogList: DogList | null;
   }
 >;
 
 export type ApiFeature = Feature<
   {
     getDog: (dogType: string) => void;
+    getDogList: () => void;
     setError: (error: string) => void;
+    setLoading: (loading: boolean) => void;
   },
   {
     error: string | null;
+    loading: boolean;
   }
 >;
 
@@ -36,12 +45,12 @@ export type DogApiScope = {
 
 export const dogapiStrings: ScopeStrings<DogApiScope> = {
   dog: {
-    actions: ["updateDog"],
-    state: ["currentDog"]
+    actions: ["updateDog", "updateDogList"],
+    state: ["currentDog", "dogList"]
   },
   api: {
-    actions: ["getDog", "setError"],
-    state: ["error"]
+    actions: ["getDog", "getDogList", "setError", "setLoading"],
+    state: ["error", "loading"]
   }
 };
 

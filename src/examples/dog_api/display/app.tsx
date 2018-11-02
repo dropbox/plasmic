@@ -10,10 +10,12 @@ import { DogSelector } from "./dog_selector";
 
 const status: Status<DogApiScope> = {
   dog: {
-    currentDog: null
+    currentDog: null,
+    dogList: null
   },
   api: {
-    error: null
+    error: null,
+    loading: false
   }
 };
 
