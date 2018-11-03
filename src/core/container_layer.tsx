@@ -1,10 +1,9 @@
 import * as React from "react";
-import { Layer } from "./layer";
+import { Layer, LayerContext } from "./layer";
 import { StatusContainer, SubscriptionHandle } from "./status_container";
 import { Logic, ScopeStrings, Status, Scope } from "./types";
-import { CompleteLogic } from "./complete_logic";
-import { extractLogic, LogicLayer } from "./logic_layer";
-import { LayerContext } from "./display_layer";
+import { LogicLayer } from "./logic_layer";
+import { LayerReactContext } from "./display_layer";
 
 export type ContainerLayerProps<S extends Scope> = {
   scopeStrings: ScopeStrings<S>;
@@ -27,16 +26,13 @@ export class ContainerLayer<S extends Scope>
     return this.container.getActions(this.logic);
   }
 
-  constructor(props: ContainerLayerProps<S>) {
-    super(props);
+  constructor(props: ContainerLayerProps<S>, context: LayerContext<S>) {
+    super(props, context);
     this.initialize();
   }
 
   componentWillReceiveProps(nextProps: ContainerLayerProps<S>) {
-    if (
-      this.props.logicLayers !== nextProps.logicLayers ||
-      this.props.status !== nextProps.status
-    ) {
+    if (this.props.status !== nextProps.status) {
       this.initialize();
     }
   }
@@ -54,23 +50,19 @@ export class ContainerLayer<S extends Scope>
     this.subscription = this.container.subscribe(() => {
       this.forceUpdate();
     });
-
-    this.logic = new CompleteLogic<S>(
-      this.props.scopeStrings,
-      extractLogic(this.props.logicLayers, this)
-    );
   }
 
   render() {
     return (
-      <LayerContext.Provider
+      <LayerReactContext.Provider
         value={{
           container: this.container,
-          logic: this.logic
+          layers: this.props.logicLayers,
+          strings: this.props.scopeStrings as ScopeStrings<Scope>
         }}
       >
         {this.props.children}
-      </LayerContext.Provider>
+      </LayerReactContext.Provider>
     );
   }
 }

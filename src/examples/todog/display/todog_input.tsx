@@ -5,10 +5,12 @@ import { DogApiScope, Dog } from "../../dog_api/types";
 import { Autocomplete } from "../../dog_api/display/autocomplete";
 import { DogPic } from "../../dog_api/display/dog_pic";
 
-export class Input extends DisplayLayer<TodoScope<Dog> & DogApiScope> {
+export class TodogInput extends DisplayLayer<TodoScope<Dog> & DogApiScope> {
   onSubmit = e => {
     const { currentDog } = this.status.dog;
-    this.actions.todos.addTodo(currentDog.dogType, currentDog);
+    if (currentDog !== null) {
+      this.actions.todos.addTodo(currentDog.dogType, currentDog);
+    }
     e.preventDefault();
   };
   render() {
@@ -16,7 +18,7 @@ export class Input extends DisplayLayer<TodoScope<Dog> & DogApiScope> {
       <form onSubmit={this.onSubmit}>
         <Autocomplete />
         <button type="submit">Add</button>
-        <DogPic />
+        <DogPic dog={this.status.dog.currentDog} style={{ height: 50 }} />
       </form>
     );
   }

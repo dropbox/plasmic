@@ -5,7 +5,6 @@ import { LogicLayer } from "../../../core/logic_layer";
 import { DogApiScope, dogapiStrings, Dog } from "../types";
 import { DogLayer } from "../logic/dog";
 import { ApiLayer } from "../logic/api";
-import { DogPic } from "./dog_pic";
 import { AutocompleteLayer } from "../logic/autocomplete";
 import { Autocomplete } from "./autocomplete";
 
@@ -40,7 +39,6 @@ export class App extends React.Component {
         scopeStrings={dogapiStrings}
       >
         <Autocomplete />
-        <DogPic />
       </ContainerLayer>
     );
   }

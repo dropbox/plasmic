@@ -27,7 +27,7 @@ export class CompleteLogic<S extends Scope> implements Logic<S> {
   constructor(private strings: ScopeStrings<S>, partials: PartialLogic<S>[]) {
     this.completeReducers(partials);
     this.completeActions(partials);
-    this.completeFeatures(partials);
+    this.completeObservers(partials);
   }
 
   private completeReducers(partials: PartialLogic<S>[]) {
@@ -49,8 +49,8 @@ export class CompleteLogic<S extends Scope> implements Logic<S> {
                     }
                   })
                   .reduce<Reducer>((acc, partial) => {
-                    return (v: Value, a: Value) => {
-                      let next = acc(v, a);
+                    return (v: Value, ...a: Value[]) => {
+                      let next = acc(v, ...a);
 
                       if (next === undefined) {
                         next = v;
@@ -58,7 +58,7 @@ export class CompleteLogic<S extends Scope> implements Logic<S> {
 
                       return (partial.reducers![feature]![action]![
                         state
-                      ]! as any)(next, a);
+                      ]! as any)(next, ...a);
                     };
                   }, CompleteLogic.noopReducer)
               }),
@@ -100,7 +100,7 @@ export class CompleteLogic<S extends Scope> implements Logic<S> {
     );
   }
 
-  private completeFeatures(partials: PartialLogic<S>[]) {
+  private completeObservers(partials: PartialLogic<S>[]) {
     this.observers = Object.keys(this.strings).reduce(
       (acc, feature) => ({
         ...(acc as any),

@@ -1,17 +1,16 @@
 import * as React from "react";
 import { DisplayLayer } from "../../../core/display_layer";
-import { DogApiScope } from "../types";
+import { DogApiScope, Dog } from "../types";
 
-export class DogPic extends DisplayLayer<DogApiScope> {
+export type DogPicProps = {
+  style?: React.CSSProperties;
+  dog: Dog;
+};
+export class DogPic extends DisplayLayer<DogApiScope, DogPicProps> {
   render() {
-    const { currentDog } = this.status.dog;
-
-    if (currentDog !== null) {
-      return (
-        <div>
-          <img src={currentDog.url} />
-        </div>
-      );
+    const { dog, style } = this.props;
+    if (dog !== null) {
+      return <img alt={dog.dogType} style={style} src={dog.url} />;
     }
 
     return null;

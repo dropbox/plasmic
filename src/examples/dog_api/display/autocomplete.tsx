@@ -1,6 +1,7 @@
 import * as React from "react";
 import { autocomplete, DogApiScope } from "../types";
 import { DisplayLayer } from "../../../core/display_layer";
+import { DogPic } from "./dog_pic";
 
 export class Autocomplete extends DisplayLayer<DogApiScope> {
   componentDidMount() {
@@ -26,9 +27,12 @@ export class Autocomplete extends DisplayLayer<DogApiScope> {
           />
           <datalist id="autocomplete-list">
             {filteredOptions.map(option => (
-              <option value={option}>{option}</option>
+              <option key={option} value={option}>
+                {option}
+              </option>
             ))}
           </datalist>
+          <DogPic dog={this.status.dog.currentDog} />
         </React.Fragment>
       );
     } else {

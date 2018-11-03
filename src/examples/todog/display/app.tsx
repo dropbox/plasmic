@@ -8,13 +8,12 @@ import { ApiLayer } from "../../dog_api/logic/api";
 import { FilterLayer } from "../../todos/logic/filter";
 import { ListLayer } from "../../todos/logic/list";
 import { IdLayer } from "../../todos/logic/id";
-import { DogPic } from "../../dog_api/display/dog_pic";
 import { AutocompleteLayer } from "../../dog_api/logic/autocomplete";
-import { Autocomplete } from "../../dog_api/display/autocomplete";
-import { TodoScope, todoStrings } from "../../todos/types";
-import { TodogLayer } from "../logic/todog";
+import { TodoScope, todoStrings, Todo } from "../../todos/types";
 import { List } from "../../todos/display/list";
 import { Filter } from "../../todos/display/filters";
+import { TodogInput } from "./todog_input";
+import { DogPic } from "../../dog_api/display/dog_pic";
 
 const status: Status<DogApiScope & TodoScope<Dog>> = {
   todos: {
@@ -44,8 +43,7 @@ const logicLayers: LogicLayer<DogApiScope | TodoScope<Dog>>[] = [
   new AutocompleteLayer(),
   new FilterLayer(),
   new ListLayer(),
-  new IdLayer(),
-  new TodogLayer()
+  new IdLayer()
 ];
 
 export class App extends React.Component {
@@ -59,9 +57,15 @@ export class App extends React.Component {
           ...todoStrings
         }}
       >
-        <Autocomplete />
-        <DogPic />
-        <List />
+        <TodogInput />
+        <List
+          renderTodo={(todo: Todo<Dog>) => (
+            <React.Fragment>
+              <DogPic dog={todo.data} style={{ height: 30 }} />
+              {todo.label}
+            </React.Fragment>
+          )}
+        />
         <Filter />
       </ContainerLayer>
     );

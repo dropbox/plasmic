@@ -7,6 +7,7 @@ import {
   Value,
   Reducer
 } from "./types";
+import { log } from "util";
 
 export type SubscriptionHandle = { unsubscribe: () => void };
 
@@ -16,6 +17,13 @@ export class StatusContainer<S extends Scope> {
   constructor(private strings: ScopeStrings<S>, private status: Status<S>) {}
   public getStatus(): Status<S> {
     return this.status;
+  }
+  public setStatus(partial: Partial<Status<S>>) {
+    Object.keys(partial).forEach(feature => {
+      if (feature in partial && this.status[feature] !== partial[feature]) {
+        this.status[feature] = partial[feature];
+      }
+    });
   }
   public subscribe(listener: (s: Status<S>) => void): SubscriptionHandle {
     this.listeners.push(listener);
@@ -33,10 +41,11 @@ export class StatusContainer<S extends Scope> {
           (acc, action) => ({
             ...(acc as any),
             [action]: (...values: Value[]) => {
-              const previous = this.status;
+              const previous = {
+                ...(this.status as any)
+              };
 
-              this.status = {
-                ...(this.status as any),
+              this.setStatus({
                 [feature]: this.strings[feature].state.reduce(
                   (acc, state) => ({
                     ...(acc as any),
@@ -46,9 +55,9 @@ export class StatusContainer<S extends Scope> {
                   }),
                   this.status[feature]
                 )
-              };
+              } as Partial<Status<S>>);
 
-              logic.actions[feature][action](previous, ...values);
+              logic.actions[feature][action](previous[feature], ...values);
               logic.observers[feature](previous[feature]);
 
               this.updateSubscribers();
