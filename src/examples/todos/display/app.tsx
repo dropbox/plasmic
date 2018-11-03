@@ -1,5 +1,5 @@
 import * as React from "react";
-import { TodoStrings, TodoScope } from "../types";
+import { todoStrings, TodoScope } from "../types";
 import { Input } from "./input";
 import { List } from "./list";
 import { Filter } from "./filters";
@@ -31,7 +31,7 @@ export class App extends React.Component {
       <ContainerLayer
         status={status}
         logicLayers={logicLayers}
-        scopeStrings={TodoStrings}
+        scopeStrings={todoStrings}
       >
         <Input />
         <List />

@@ -6,33 +6,34 @@ export type Label = string;
 export type Completed = boolean;
 export type Filter = Completed | null;
 
-export type Todo = {
+export type Todo<Data = {}> = {
   id: Id;
   label: Label;
   completed: Completed;
+  data: Data;
 };
 
-export type TodoFeature = Feature<
+export type TodoFeature<Data = {}> = Feature<
   {
-    addTodo: (label: Label) => void;
+    addTodo: (label: Label, data?: Data) => void;
     toggleCompleted: (id: Id) => void;
     deleteTodo: (id: Id) => void;
     updateFilter: (filter: Filter) => void;
     refilter: () => void;
   },
   {
-    allTodos: Todo[];
-    filteredTodos: Todo[];
+    allTodos: Todo<Data>[];
+    filteredTodos: Todo<Data>[];
     currentFilter: Filter;
     nextId: number;
   }
 >;
 
-export type TodoScope = {
-  todos: TodoFeature;
+export type TodoScope<Data = {}> = {
+  todos: TodoFeature<Data>;
 };
 
-export const TodoStrings = {
+export const todoStrings = {
   todos: {
     actions: [
       "addTodo",
@@ -45,4 +46,4 @@ export const TodoStrings = {
   }
 } as ScopeStrings<TodoScope>;
 
-export const { todos } = createLogicScaffold(TodoStrings);
+export const { todos } = createLogicScaffold(todoStrings);

@@ -22,6 +22,7 @@ export type DogFeature = Feature<
   {
     currentDog: Dog | null;
     dogList: DogList | null;
+    dogTypes: string[];
   }
 >;
 
@@ -38,20 +39,37 @@ export type ApiFeature = Feature<
   }
 >;
 
+export type AutocompleteFeature = Feature<
+  {
+    focus: () => void;
+    blur: () => void;
+    change: (value: string) => void;
+  },
+  {
+    value: string;
+    focused: boolean;
+  }
+>;
+
 export type DogApiScope = {
   dog: DogFeature;
   api: ApiFeature;
+  autocomplete: AutocompleteFeature;
 };
 
 export const dogapiStrings: ScopeStrings<DogApiScope> = {
   dog: {
     actions: ["updateDog", "updateDogList"],
-    state: ["currentDog", "dogList"]
+    state: ["currentDog", "dogList", "dogTypes"]
   },
   api: {
     actions: ["getDog", "getDogList", "setError", "setLoading"],
     state: ["error", "loading"]
+  },
+  autocomplete: {
+    actions: ["focus", "blur", "change"],
+    state: ["focused", "value"]
   }
 };
 
-export const { dog, api } = createLogicScaffold(dogapiStrings);
+export const { dog, api, autocomplete } = createLogicScaffold(dogapiStrings);

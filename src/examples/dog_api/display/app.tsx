@@ -2,24 +2,34 @@ import * as React from "react";
 import { ContainerLayer } from "../../../core/container_layer";
 import { Status } from "../../../core/types";
 import { LogicLayer } from "../../../core/logic_layer";
-import { DogApiScope, dogapiStrings } from "../types";
+import { DogApiScope, dogapiStrings, Dog } from "../types";
 import { DogLayer } from "../logic/dog";
 import { ApiLayer } from "../logic/api";
 import { DogPic } from "./dog_pic";
-import { DogSelector } from "./dog_selector";
+import { AutocompleteLayer } from "../logic/autocomplete";
+import { Autocomplete } from "./autocomplete";
 
 const status: Status<DogApiScope> = {
   dog: {
     currentDog: null,
-    dogList: null
+    dogList: null,
+    dogTypes: []
   },
   api: {
     error: null,
     loading: false
+  },
+  autocomplete: {
+    value: "",
+    focused: false
   }
 };
 
-const logicLayers: LogicLayer<DogApiScope>[] = [new DogLayer(), new ApiLayer()];
+const logicLayers: LogicLayer<DogApiScope>[] = [
+  new DogLayer(),
+  new ApiLayer(),
+  new AutocompleteLayer()
+];
 
 export class App extends React.Component {
   render() {
@@ -29,7 +39,7 @@ export class App extends React.Component {
         logicLayers={logicLayers}
         scopeStrings={dogapiStrings}
       >
-        <DogSelector />
+        <Autocomplete />
         <DogPic />
       </ContainerLayer>
     );

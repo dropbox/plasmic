@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "build:todos": "webpack --config src/examples/todos/webpack.config.js",
-    "build:dog_api": "webpack --config src/examples/dog_api/webpack.config.js"
+    "build:dog_api": "webpack --config src/examples/dog_api/webpack.config.js",
+    "build:todog": "webpack --config src/examples/todog/webpack.config.js"
   },
   "dependencies": {
     "awesome-typescript-loader": "^3.1.2",

@@ -7,7 +7,11 @@ export class DogPic extends DisplayLayer<DogApiScope> {
     const { currentDog } = this.status.dog;
 
     if (currentDog !== null) {
-      return <img src={currentDog.url} />;
+      return (
+        <div>
+          <img src={currentDog.url} />
+        </div>
+      );
     }
 
     return null;

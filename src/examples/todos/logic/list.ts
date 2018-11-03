@@ -9,15 +9,16 @@ import {
   Completed
 } from "../types";
 
-export class ListLayer extends LogicLayer<TodoScope> {
+export class ListLayer<Data = {}> extends LogicLayer<TodoScope<Data>> {
   @todos.on.addTodo.update.allTodos()
-  updateOnAdd(allTodos: Todo[], label: Label) {
+  updateOnAdd(allTodos: Todo[], label: Label, data?: Data) {
     return [
       ...allTodos,
       {
         label,
         id: this.status.todos.nextId,
-        completed: false
+        completed: false,
+        data: data || {}
       }
     ];
   }

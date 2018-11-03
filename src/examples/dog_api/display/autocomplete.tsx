@@ -1,47 +1,28 @@
 import * as React from "react";
+import { autocomplete, DogApiScope } from "../types";
+import { DisplayLayer } from "../../../core/display_layer";
 
-export type AutocompleteProps = {
-  options: string[];
-};
-
-export type AutocompleteState = {
-  focused: boolean;
-  value: string;
-};
-
-export class Autocomplete extends React.Component<
-  AutocompleteProps,
-  AutocompleteState
-> {
-  constructor(props: AutocompleteProps) {
-    super(props);
-    this.state = {
-      value: "",
-      focused: false
-    };
+export class Autocomplete extends DisplayLayer<DogApiScope> {
+  componentDidMount() {
+    this.actions.api.getDogList();
   }
-  onFocus = () => {
-    this.setState({ focused: true });
-  };
-  onBlur = () => {
-    this.setState({ focused: false });
-  };
-  onChange = event => {
-    this.setState({ value: event.target.value });
-  };
   render() {
-    const searchRegexp = new RegExp(this.state.value.toLocaleLowerCase());
-    const filteredOptions = this.props.options.filter(
+    const searchRegexp = new RegExp(
+      this.status.autocomplete.value.toLowerCase()
+    );
+    const filteredOptions = this.status.dog.dogTypes.filter(
       option => !!option.match(searchRegexp)
     );
-    if (this.state.focused) {
+    if (this.status.autocomplete.focused) {
       return (
         <React.Fragment>
           <input
             list="autocomplete-list"
-            onBlur={this.onBlur}
-            onChange={this.onChange}
-            value={this.state.value}
+            onBlur={this.actions.autocomplete.blur}
+            onChange={event => {
+              this.actions.autocomplete.change(event.target.value);
+            }}
+            value={this.status.autocomplete.value}
           />
           <datalist id="autocomplete-list">
             {filteredOptions.map(option => (
@@ -51,7 +32,12 @@ export class Autocomplete extends React.Component<
         </React.Fragment>
       );
     } else {
-      return <input value={this.state.value} onFocus={this.onFocus} />;
+      return (
+        <input
+          value={this.status.autocomplete.value}
+          onFocus={this.actions.autocomplete.focus}
+        />
+      );
     }
   }
 }
