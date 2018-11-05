@@ -40,7 +40,7 @@ export const todosStrings = {
     "refilter",
     "updateFilter"
   ],
-  state: ["allTodos", "filteredTodos", "currentFilter", "nextId"],
+  status: ["allTodos", "filteredTodos", "currentFilter", "nextId"],
   utilities: ["renderTodo"]
 } as FeatureStrings<TodoFeature>;
 

@@ -8,7 +8,7 @@ export type ApiLayerScope = {
 
 export class ApiLayer extends Layer<ApiLayerScope> {
   @api.on.getDog.observe()
-  async getDog(previous: ApiFeature["state"], dogType: string) {
+  async getDog(previous: ApiFeature["status"], dogType: string) {
     const url = `https://dog.ceo/api/breed/${dogType}/images/random`;
     const dogResponse: DogResponse | null = await this.doAjax(url);
 

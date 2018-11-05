@@ -5,6 +5,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
+    "build:counter": "webpack --config src/examples/counter/webpack.config.js",
     "build:todos": "webpack --config src/examples/todos/webpack.config.js",
     "build:dog_api": "webpack --config src/examples/dog_api/webpack.config.js",
     "build:todog": "webpack --config src/examples/todog/webpack.config.js",

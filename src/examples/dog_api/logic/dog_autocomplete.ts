@@ -15,14 +15,14 @@ export type DogAutocompleteLayerScope = {
 
 export class DogAutocompleteLayer extends Layer<DogAutocompleteLayerScope> {
   @dog.observe()
-  triggerRefilterFromDog(previous: DogFeature["state"]) {
+  triggerRefilterFromDog(previous: DogFeature["status"]) {
     if (previous.dogTypes !== this.status.dog.dogTypes) {
       this.actions.autocomplete.refilter();
     }
   }
 
   @autocomplete.observe()
-  triggerRefilterFromAutocomplete(previous: AutocompleteFeature["state"]) {
+  triggerRefilterFromAutocomplete(previous: AutocompleteFeature["status"]) {
     if (
       previous.value !== this.status.autocomplete.value &&
       this.status.dog.dogTypes.indexOf(this.status.autocomplete.value) !== -1

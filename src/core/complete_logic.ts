@@ -51,13 +51,13 @@ export class CompleteLogic<S extends Scope> implements Logic<S> {
         [feature]: this.strings[feature].actions.reduce(
           (acc, action) => ({
             ...(acc as any),
-            [action]: this.strings[feature].state.reduce(
-              (acc, state) => ({
+            [action]: this.strings[feature].status.reduce(
+              (acc, status) => ({
                 ...(acc as any),
-                [state]: partials
+                [status]: partials
                   .filter(partial => {
                     try {
-                      return !!partial.reducers[feature][action][state];
+                      return !!partial.reducers[feature][action][status];
                     } catch {
                       return false;
                     }
@@ -71,7 +71,7 @@ export class CompleteLogic<S extends Scope> implements Logic<S> {
                       }
 
                       return (partial.reducers![feature]![action]![
-                        state
+                        status
                       ]! as any)(next, ...a);
                     };
                   }, CompleteLogic.noopReducer)

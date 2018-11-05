@@ -76,7 +76,7 @@ function createActionScaffold(strings, feature, action) {
         }
       };
     }),
-    update: strings[feature].state.reduce(
+    update: strings[feature].status.reduce(
       (acc, state) => ({
         ...(acc as any),
         [state]: createReducerScaffold(strings, feature, action, state)

@@ -22,13 +22,13 @@ export type Feature<
   U extends UtilityShape = UtilityShape
 > = {
   actions: A;
-  state: S;
+  status: S;
   utilities: U;
 };
 
 export type FeatureStrings<F extends Feature> = {
   actions: (keyof F["actions"])[];
-  state: (keyof F["state"])[];
+  status: (keyof F["status"])[];
   utilities: (keyof F["utilities"])[];
 };
 
@@ -40,7 +40,7 @@ export type ScopeStrings<S extends Scope> = {
   [F in keyof S]: FeatureStrings<S[F]>
 };
 
-export type Status<S extends Scope> = { [K in keyof S]: S[K]["state"] };
+export type Status<S extends Scope> = { [K in keyof S]: S[K]["status"] };
 
 export type Actions<S extends Scope> = {
   [F in keyof S]: { [A in keyof S[F]["actions"]]: S[F]["actions"][A] }
@@ -63,7 +63,7 @@ export type Observer<S extends StatusShape = StatusShape> = (
 ) => void;
 
 export type Observers<S extends Scope> = {
-  [F in keyof S]: Observer<S[F]["state"]>
+  [F in keyof S]: Observer<S[F]["status"]>
 };
 
 export type Reducer<V extends Value = Value, A extends Action = Action> = (
@@ -74,7 +74,10 @@ export type Reducer<V extends Value = Value, A extends Action = Action> = (
 export type Reducers<S extends Scope> = {
   [F in keyof S]: {
     [A in keyof S[F]["actions"]]: {
-      [V in keyof S[F]["state"]]: Reducer<S[F]["state"][V], S[F]["actions"][A]>
+      [V in keyof S[F]["status"]]: Reducer<
+        S[F]["status"][V],
+        S[F]["actions"][A]
+      >
     }
   }
 };
@@ -82,7 +85,10 @@ export type Reducers<S extends Scope> = {
 export type PartialReducers<S extends Scope> = {
   [F in keyof S]?: {
     [A in keyof S[F]["actions"]]?: {
-      [V in keyof S[F]["state"]]?: Reducer<S[F]["state"][V], S[F]["actions"][A]>
+      [V in keyof S[F]["status"]]?: Reducer<
+        S[F]["status"][V],
+        S[F]["actions"][A]
+      >
     }
   }
 };
@@ -104,7 +110,7 @@ export type PartialLogic<S extends Scope> = {
 export type ObserverDecorator<F, Feat extends Feature> = ((
   comment?: {
     feature: F;
-    signature: (previousState: Feat["state"]) => void;
+    signature: (previousState: Feat["status"]) => void;
   }
 ) => (t: any, m: string) => void);
 
@@ -112,7 +118,7 @@ export type ActionDecorator<F, A, Feat extends Feature, Act extends Action> = ((
   comment?: {
     feature: F;
     action: A;
-    signature: (previousState: Feat["state"], ...a: ActionArgs<Act>) => void;
+    signature: (previousState: Feat["status"], ...a: ActionArgs<Act>) => void;
   }
 ) => (t: any, m: string) => void);
 
@@ -146,12 +152,12 @@ export type LogicScaffold<S extends Scope> = {
       [A in keyof S[F]["actions"]]: {
         observe: ActionDecorator<F, A, S[F], S[F]["actions"][A]>;
         update: {
-          [V in keyof S[F]["state"]]: ReducerDecorator<
+          [V in keyof S[F]["status"]]: ReducerDecorator<
             F,
             A,
             V,
             S[F]["actions"][A],
-            S[F]["state"][V]
+            S[F]["status"][V]
           >
         };
       }

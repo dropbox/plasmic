@@ -32,7 +32,7 @@ export class AutocompleteLayer extends Layer<AutocompleteLayerScope> {
   }
 
   @autocomplete.observe()
-  triggerRefilter(previous: AutocompleteFeature["state"]) {
+  triggerRefilter(previous: AutocompleteFeature["status"]) {
     if (previous.value !== this.status.autocomplete.value) {
       this.actions.autocomplete.refilter();
     }

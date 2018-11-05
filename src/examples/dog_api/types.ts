@@ -58,18 +58,18 @@ export type AutocompleteFeature = Feature<
 
 export const dogStrings: FeatureStrings<DogFeature> = {
   actions: ["updateDog", "updateDogList"],
-  state: ["currentDog", "dogList", "dogTypes"],
+  status: ["currentDog", "dogList", "dogTypes"],
   utilities: []
 };
 
 export const apiStrings: FeatureStrings<ApiFeature> = {
   actions: ["getDog", "getDogList", "setError", "setLoading"],
-  state: ["error", "loading"],
+  status: ["error", "loading"],
   utilities: []
 };
 export const autocompleteStrings: FeatureStrings<AutocompleteFeature> = {
   actions: ["focus", "blur", "change", "refilter"],
-  state: ["focused", "value", "filteredOptions"],
+  status: ["focused", "value", "filteredOptions"],
   utilities: ["getOptions"]
 };
 

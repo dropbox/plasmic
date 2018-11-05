@@ -47,7 +47,7 @@ export class StatusContainer<S extends Scope> {
               };
 
               this.setStatus({
-                [feature]: this.strings[feature].state.reduce(
+                [feature]: this.strings[feature].status.reduce(
                   (acc, state) => ({
                     ...(acc as any),
                     [state]: (logic.reducers[feature][action][
