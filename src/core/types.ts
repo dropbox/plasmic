@@ -1,31 +1,39 @@
 export type Value = any;
 
-export type Action<T extends any[] = any[]> = (...args: T) => void;
+export type Action<T extends Value[] = Value[]> = (...args: T) => void;
+
+export type Utility<T extends Value[] = Value[], R extends Value = void> = (
+  ...args: T
+) => R;
 
 type ActionArgs<T> = T extends Action<infer U> ? U : never;
 
-export type ActionShape = {
-  [key: string]: Action;
+export type Shape<T> = {
+  [key: string]: T;
 };
 
-export type StateShape = {
-  [key: string]: Value;
-};
+export type ActionShape = Shape<Action>;
+export type StatusShape = Shape<Value>;
+export type UtilityShape = Shape<Utility>;
 
 export type Feature<
   A extends ActionShape = ActionShape,
-  S extends StateShape = StateShape
+  S extends StatusShape = StatusShape,
+  U extends UtilityShape = UtilityShape
 > = {
   actions: A;
   state: S;
+  utilities: U;
 };
 
 export type FeatureStrings<
   A extends ActionShape = ActionShape,
-  S extends StateShape = StateShape
+  S extends StatusShape = StatusShape,
+  U extends UtilityShape = UtilityShape
 > = {
   actions: (keyof A)[];
   state: (keyof S)[];
+  utilities: (keyof U)[];
 };
 
 export type Scope = {
@@ -33,7 +41,11 @@ export type Scope = {
 };
 
 export type ScopeStrings<S extends Scope> = {
-  [F in keyof S]: FeatureStrings<S[F]["actions"], S[F]["state"]>
+  [F in keyof S]: FeatureStrings<
+    S[F]["actions"],
+    S[F]["state"],
+    S[F]["utilities"]
+  >
 };
 
 export type Status<S extends Scope> = { [K in keyof S]: S[K]["state"] };
@@ -42,11 +54,21 @@ export type Actions<S extends Scope> = {
   [F in keyof S]: { [A in keyof S[F]["actions"]]: S[F]["actions"][A] }
 };
 
+export type Utilities<S extends Scope> = {
+  [F in keyof S]: { [U in keyof S[F]["utilities"]]: S[F]["utilities"][U] }
+};
+
 export type PartialActions<S extends Scope> = {
   [F in keyof S]?: { [A in keyof S[F]["actions"]]?: S[F]["actions"][A] }
 };
 
-export type Observer<S extends StateShape = StateShape> = (previous: S) => void;
+export type PartialUtilities<S extends Scope> = {
+  [F in keyof S]?: { [U in keyof S[F]["utilities"]]?: S[F]["utilities"][U] }
+};
+
+export type Observer<S extends StatusShape = StatusShape> = (
+  previous: S
+) => void;
 
 export type Observers<S extends Scope> = {
   [F in keyof S]: Observer<S[F]["state"]>
@@ -77,12 +99,14 @@ export type Logic<S extends Scope> = {
   reducers: Reducers<S>;
   actions: Actions<S>;
   observers: Observers<S>;
+  utilities: Utilities<S>;
 };
 
 export type PartialLogic<S extends Scope> = {
   reducers?: PartialReducers<S>;
   actions?: PartialActions<S>;
   observers?: Partial<Observers<S>>;
+  utilities?: PartialUtilities<S>;
 };
 
 export type ObserverDecorator<F, Feat extends Feature> = ((
@@ -115,6 +139,14 @@ export type ReducerDecorator<
   }
 ) => (t: any, m: string) => void);
 
+export type UtilityDecorator<F, U, Util extends Utility> = ((
+  comment?: {
+    feature: F;
+    utility: U;
+    signature: Util;
+  }
+) => (t: any, m: string) => void);
+
 export type LogicScaffold<S extends Scope> = {
   [F in keyof S]: {
     observe: ObserverDecorator<F, S[F]>;
@@ -131,6 +163,13 @@ export type LogicScaffold<S extends Scope> = {
           >
         };
       }
+    };
+    provides: {
+      [U in keyof S[F]["utilities"]]: UtilityDecorator<
+        F,
+        U,
+        S[F]["utilities"][U]
+      >
     };
   }
 };

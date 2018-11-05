@@ -1,5 +1,5 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { App } from "./display/app";
+import { DogApiApp } from "./containers/app";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<DogApiApp />, document.getElementById("root"));

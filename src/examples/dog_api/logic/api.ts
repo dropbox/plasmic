@@ -1,4 +1,3 @@
-import { LogicLayer } from "../../../core/logic_layer";
 import {
   DogApiScope,
   api,
@@ -7,8 +6,9 @@ import {
   DogResponse,
   DogList
 } from "../types";
+import { Layer } from "../../../core/layer";
 
-export class ApiLayer extends LogicLayer<DogApiScope> {
+export class ApiLayer extends Layer<DogApiScope> {
   @api.on.getDog.observe()
   async getDog(previous: ApiFeature["state"], dogType: string) {
     const url = `https://dog.ceo/api/breed/${dogType}/images/random`;

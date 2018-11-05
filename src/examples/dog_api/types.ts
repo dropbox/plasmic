@@ -1,5 +1,5 @@
 import { Feature, ScopeStrings } from "../../core/types";
-import { createLogicScaffold } from "../../core/logic_layer";
+import { createLogicDecorators } from "../../core/decorators";
 
 export type Dog = {
   dogType: string;
@@ -44,10 +44,15 @@ export type AutocompleteFeature = Feature<
     focus: () => void;
     blur: () => void;
     change: (value: string) => void;
+    refilter: () => void;
   },
   {
     value: string;
     focused: boolean;
+    filteredOptions: string[];
+  },
+  {
+    getOptions: () => string[];
   }
 >;
 
@@ -60,16 +65,19 @@ export type DogApiScope = {
 export const dogapiStrings: ScopeStrings<DogApiScope> = {
   dog: {
     actions: ["updateDog", "updateDogList"],
-    state: ["currentDog", "dogList", "dogTypes"]
+    state: ["currentDog", "dogList", "dogTypes"],
+    utilities: []
   },
   api: {
     actions: ["getDog", "getDogList", "setError", "setLoading"],
-    state: ["error", "loading"]
+    state: ["error", "loading"],
+    utilities: []
   },
   autocomplete: {
-    actions: ["focus", "blur", "change"],
-    state: ["focused", "value"]
+    actions: ["focus", "blur", "change", "refilter"],
+    state: ["focused", "value", "filteredOptions"],
+    utilities: ["getOptions"]
   }
 };
 
-export const { dog, api, autocomplete } = createLogicScaffold(dogapiStrings);
+export const { dog, api, autocomplete } = createLogicDecorators(dogapiStrings);

@@ -1,47 +1,97 @@
 import * as React from "react";
 import { Layer, LayerContext } from "./layer";
 import { StatusContainer, SubscriptionHandle } from "./status_container";
-import { Logic, ScopeStrings, Status, Scope } from "./types";
-import { LogicLayer } from "./logic_layer";
-import { LayerReactContext } from "./display_layer";
+import { ChildStatusContainer } from "./child_status_container";
+import { ScopeStrings, Status, Scope, Logic } from "./types";
+import { extractLogic } from "./decorators";
+import { CompleteLogic } from "./complete_logic";
 
-export type ContainerLayerProps<S extends Scope> = {
-  scopeStrings: ScopeStrings<S>;
-  status: Status<S>;
-  logicLayers: LogicLayer<S>[];
-};
+export const LayerReactContext = React.createContext<LayerContext<Scope>>(
+  {} as LayerContext<Scope>
+);
 
-export class ContainerLayer<S extends Scope>
-  extends React.Component<ContainerLayerProps<S>>
-  implements Layer<S> {
+export abstract class ContainerLayer<
+  S extends Scope,
+  InnerScope extends Partial<S> = S,
+  Props = {},
+  State = {}
+> extends React.Component<Props, State> implements Layer<S> {
+  static contextType = LayerReactContext;
+
   private container: StatusContainer<S>;
-  private logic: Logic<S>;
   private subscription: SubscriptionHandle;
+
+  protected abstract readonly strings: ScopeStrings<InnerScope>;
+  protected abstract readonly logic: Layer<Partial<S>>[];
+  protected readonly defaultStatus: Status<InnerScope>;
+
+  protected abstract display(): JSX.Element | string | null;
 
   get status() {
     return this.container.getStatus();
   }
 
   get actions() {
-    return this.container.getActions(this.logic);
+    return this.container.getActions(this.getLogic());
   }
 
-  constructor(props: ContainerLayerProps<S>, context: LayerContext<S>) {
-    super(props, context);
+  get utilities() {
+    return this.getLogic().utilities;
+  }
+
+  extractLogic() {
+    return {};
+  }
+
+  private getLogic(): Logic<S> {
+    const strings = this.getAllStrings();
+    const layers = this.getAllLogicLayers();
+
+    const partialLogic = extractLogic(layers, this);
+
+    return new CompleteLogic(strings, partialLogic) as Logic<S>;
+  }
+
+  private getAllLogicLayers() {
+    const { context, logic } = this;
+    let layers = [...logic, this];
+
+    if (context.layers) {
+      layers = [...context.layers, ...layers];
+    }
+
+    return layers;
+  }
+
+  private getAllStrings() {
+    const { context, strings } = this;
+    let allStrings = strings;
+
+    if (context.strings) {
+      allStrings = {
+        ...(context.strings as any),
+        ...(allStrings as any)
+      };
+    }
+
+    return allStrings;
+  }
+
+  componentWillMount() {
     this.initialize();
   }
 
-  componentWillReceiveProps(nextProps: ContainerLayerProps<S>) {
-    if (this.props.status !== nextProps.status) {
-      this.initialize();
+  protected initialize() {
+    const strings = this.getAllStrings();
+    if (this.context.container) {
+      this.container = new ChildStatusContainer<S>(
+        strings,
+        this.context.container,
+        this.defaultStatus
+      );
+    } else {
+      this.container = new StatusContainer<S>(strings, this.defaultStatus);
     }
-  }
-
-  initialize() {
-    this.container = new StatusContainer<S>(
-      this.props.scopeStrings,
-      this.props.status
-    );
 
     if (this.subscription !== undefined) {
       this.subscription.unsubscribe();
@@ -54,15 +104,33 @@ export class ContainerLayer<S extends Scope>
 
   render() {
     return (
-      <LayerReactContext.Provider
-        value={{
-          container: this.container,
-          layers: this.props.logicLayers,
-          strings: this.props.scopeStrings as ScopeStrings<Scope>
-        }}
+      <MappingLayer
+        container={this.container}
+        layers={this.getAllLogicLayers()}
+        strings={this.getAllStrings()}
       >
-        {this.props.children}
-      </LayerReactContext.Provider>
+        {this.display()}
+      </MappingLayer>
     );
   }
+}
+
+function MappingLayer<S extends Scope>(
+  props: LayerContext<S> & React.HTMLProps<{}>
+) {
+  return (
+    <LayerReactContext.Consumer>
+      {context => (
+        <LayerReactContext.Provider
+          value={{
+            container: props.container,
+            layers: props.layers,
+            strings: props.strings as ScopeStrings<Scope>
+          }}
+        >
+          {props.children}
+        </LayerReactContext.Provider>
+      )}
+    </LayerReactContext.Consumer>
+  );
 }

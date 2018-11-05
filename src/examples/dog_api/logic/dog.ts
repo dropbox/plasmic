@@ -1,7 +1,7 @@
-import { LogicLayer } from "../../../core/logic_layer";
 import { DogApiScope, dog, Dog, DogList, DogFeature } from "../types";
+import { Layer } from "../../../core/layer";
 
-export class DogLayer extends LogicLayer<DogApiScope> {
+export class DogLayer extends Layer<DogApiScope> {
   @dog.on.updateDog.update.currentDog()
   updateDog(currentDog: Dog, newDog: Dog) {
     return newDog;

@@ -3,7 +3,7 @@ const path = require("path");
 module.exports = {
   entry: "./src/examples/todos/index.tsx",
   output: {
-    filename: "app.js",
+    filename: "todos.js",
     path: path.resolve("./client/public")
   },
 

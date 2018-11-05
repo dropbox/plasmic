@@ -1,13 +1,10 @@
 import * as React from "react";
-import { Scope, Status, Actions, Logic } from "./types";
+import { Scope, Status, Actions, Logic, Utilities } from "./types";
 import { Layer, LayerContext } from "./layer";
 import { StatusContainer } from "./status_container";
 import { CompleteLogic } from "./complete_logic";
-import { extractLogic } from "./logic_layer";
-
-export const LayerReactContext = React.createContext<LayerContext<Scope>>(
-  {} as LayerContext<Scope>
-);
+import { extractLogic } from "./decorators";
+import { LayerReactContext } from "./container_layer";
 
 export class DisplayLayer<S extends Scope = {}, Props = {}, State = {}>
   extends React.Component<Props, State>
@@ -16,20 +13,29 @@ export class DisplayLayer<S extends Scope = {}, Props = {}, State = {}>
   public get status(): Status<S> {
     return this.container.getStatus();
   }
+
   public get actions(): Actions<S> {
-    return this.getActions();
+    return this.container.getActions(this.getLogic());
+  }
+
+  public get utilities(): Utilities<S> {
+    return this.getLogic().utilities;
   }
 
   private get container(): StatusContainer<S> {
     return this.context.container;
   }
 
-  private getActions = (() => {
+  extractLogic() {
+    return {};
+  }
+
+  private getLogic = (() => {
     let lastContainer = null;
     let lastLayers = null;
-    let lastActions = null;
+    let lastLogic = null;
 
-    return (): Actions<S> => {
+    return (): Logic<S> => {
       if (
         this.context.layers !== lastLayers ||
         this.container !== lastContainer
@@ -37,15 +43,13 @@ export class DisplayLayer<S extends Scope = {}, Props = {}, State = {}>
         lastLayers = this.context.layers;
         lastContainer = this.container;
 
-        lastActions = this.container.getActions(
-          new CompleteLogic(
-            this.context.strings,
-            extractLogic(this.context.layers, this)
-          )
+        lastLogic = new CompleteLogic(
+          this.context.strings,
+          extractLogic(this.context.layers, this)
         );
       }
 
-      return lastActions;
+      return lastLogic;
     };
   })();
 }

@@ -10,13 +10,16 @@ import {
   Reducer,
   Action,
   Observer,
-  StateShape
+  StatusShape,
+  Utilities,
+  Utility
 } from "./types";
 
 export class CompleteLogic<S extends Scope> implements Logic<S> {
   reducers: Reducers<S>;
   actions: Actions<S>;
   observers: Observers<S>;
+  utilities: Utilities<S>;
 
   static noop() {}
 
@@ -24,10 +27,21 @@ export class CompleteLogic<S extends Scope> implements Logic<S> {
     return value;
   }
 
+  static utilityMessage(feature: string, utility: string) {
+    return `Utility ${utility} for feature ${feature} not implemented in scope`;
+  }
+
+  static createThrowsUtility(message: string) {
+    return () => {
+      throw new ReferenceError(message);
+    };
+  }
+
   constructor(private strings: ScopeStrings<S>, partials: PartialLogic<S>[]) {
     this.completeReducers(partials);
     this.completeActions(partials);
     this.completeObservers(partials);
+    this.completeUtilities(partials);
   }
 
   private completeReducers(partials: PartialLogic<S>[]) {
@@ -113,13 +127,58 @@ export class CompleteLogic<S extends Scope> implements Logic<S> {
             }
           })
           .reduce<Observer>((acc, partial) => {
-            return (s: StateShape) => {
+            return (s: StatusShape) => {
               acc(s);
               partial.observers![feature]!(s);
             };
           }, CompleteLogic.noop)
       }),
       {} as Observers<S>
+    );
+  }
+
+  completeUtilities(partials: PartialLogic<S>[]): any {
+    this.utilities = Object.keys(this.strings).reduce(
+      (acc, feature) => {
+        const utilityPartials = partials.filter(partial => {
+          try {
+            return !!partial.utilities[feature];
+          } catch {
+            return false;
+          }
+        });
+        return {
+          ...(acc as any),
+          [feature]: this.strings[feature].utilities.reduce((acc, utility) => {
+            let util: Utility;
+
+            try {
+              util = utilityPartials.find(
+                partial =>
+                  !!partial.utilities[feature] &&
+                  !!partial.utilities[feature][utility]
+              ).utilities[feature][utility] as Utility | null;
+
+              if (util === null) {
+                throw new TypeError();
+              }
+            } catch (e) {
+              const message = CompleteLogic.utilityMessage(
+                feature,
+                utility as string
+              );
+              console.warn(message);
+              util = CompleteLogic.createThrowsUtility(message);
+            }
+
+            return {
+              ...(acc as any),
+              [utility]: util
+            };
+          }, {})
+        };
+      },
+      {} as Utilities<S>
     );
   }
 }

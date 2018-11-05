@@ -1,14 +1,22 @@
-import { Scope, Status, Actions, ScopeStrings } from "./types";
+import {
+  Scope,
+  Status,
+  Actions,
+  ScopeStrings,
+  Utilities,
+  PartialLogic
+} from "./types";
 import { StatusContainer } from "./status_container";
-import { LogicLayer } from "./logic_layer";
 
 export class Layer<S extends Scope> {
   readonly status: Status<S>;
   readonly actions: Actions<S>;
+  readonly utilities: Utilities<S>;
+  extractLogic: (seed: Layer<S>) => PartialLogic<S>;
 }
 
 export type LayerContext<S extends Scope> = {
   container: StatusContainer<S>;
-  layers: LogicLayer<Partial<S>>[];
+  layers: Layer<Partial<S>>[];
   strings: ScopeStrings<S>;
 };

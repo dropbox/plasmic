@@ -1,5 +1,5 @@
 import { Feature, ScopeStrings } from "../../core/types";
-import { createLogicScaffold } from "../../core/logic_layer";
+import { createLogicDecorators } from "../../core/decorators";
 
 export type Id = number;
 export type Label = string;
@@ -26,6 +26,9 @@ export type TodoFeature<Data = {}> = Feature<
     filteredTodos: Todo<Data>[];
     currentFilter: Filter;
     nextId: number;
+  },
+  {
+    renderTodo: (todo: Todo<Data>) => JSX.Element | string;
   }
 >;
 
@@ -42,8 +45,9 @@ export const todoStrings = {
       "refilter",
       "updateFilter"
     ],
-    state: ["allTodos", "filteredTodos", "currentFilter", "nextId"]
+    state: ["allTodos", "filteredTodos", "currentFilter", "nextId"],
+    utilities: ["renderTodo"]
   }
 } as ScopeStrings<TodoScope>;
 
-export const { todos } = createLogicScaffold(todoStrings);
+export const { todos } = createLogicDecorators(todoStrings);

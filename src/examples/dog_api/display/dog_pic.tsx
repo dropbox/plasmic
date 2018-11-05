@@ -3,14 +3,14 @@ import { DisplayLayer } from "../../../core/display_layer";
 import { DogApiScope, Dog } from "../types";
 
 export type DogPicProps = {
-  style?: React.CSSProperties;
-  dog: Dog;
+  dog: Dog | null;
 };
-export class DogPic extends DisplayLayer<DogApiScope, DogPicProps> {
+export class DogPic extends React.Component<DogPicProps> {
   render() {
-    const { dog, style } = this.props;
+    const { dog } = this.props;
+
     if (dog !== null) {
-      return <img alt={dog.dogType} style={style} src={dog.url} />;
+      return <img alt={dog.dogType} src={dog.url} />;
     }
 
     return null;

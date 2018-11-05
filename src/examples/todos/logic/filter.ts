@@ -1,8 +1,7 @@
-import { LogicLayer } from "../../../core/logic_layer";
 import { TodoScope, todos, Completed, Todo } from "../types";
-import { PartialReducers } from "../../../core/types";
+import { Layer } from "../../../core/layer";
 
-export class FilterLayer<Data = {}> extends LogicLayer<TodoScope<Data>> {
+export class FilterLayer<Data = {}> extends Layer<TodoScope<Data>> {
   @todos.on.updateFilter.update.currentFilter()
   updateOnUpdateFilter(current: Completed | null, next: Completed | null) {
     if (current !== next) {

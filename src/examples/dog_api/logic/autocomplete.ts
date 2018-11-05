@@ -1,7 +1,17 @@
-import { LogicLayer } from "../../../core/logic_layer";
-import { DogApiScope, autocomplete, AutocompleteFeature } from "../types";
+import {
+  DogApiScope,
+  autocomplete,
+  AutocompleteFeature,
+  dog,
+  DogFeature
+} from "../types";
+import { Layer } from "../../../core/layer";
 
-export class AutocompleteLayer extends LogicLayer<DogApiScope> {
+export type AutocompleteLayerScope = {
+  autocomplete: AutocompleteFeature;
+};
+
+export class AutocompleteLayer extends Layer<AutocompleteLayerScope> {
   @autocomplete.on.focus.update.focused()
   onFocusUpdateFocused() {
     return true;
@@ -17,13 +27,20 @@ export class AutocompleteLayer extends LogicLayer<DogApiScope> {
     return newValue;
   }
 
+  @autocomplete.on.refilter.update.filteredOptions()
+  refilter() {
+    const searchRegexp = new RegExp(
+      this.status.autocomplete.value.toLowerCase()
+    );
+    return this.utilities.autocomplete
+      .getOptions()
+      .filter(option => !!option.match(searchRegexp));
+  }
+
   @autocomplete.observe()
-  triggerGetDog(previous: AutocompleteFeature["state"]) {
-    if (
-      previous.value !== this.status.autocomplete.value &&
-      this.status.dog.dogTypes.indexOf(this.status.autocomplete.value) !== -1
-    ) {
-      this.actions.api.getDog(this.status.autocomplete.value);
+  triggerRefilter(previous: AutocompleteFeature["state"]) {
+    if (previous.value !== this.status.autocomplete.value) {
+      this.actions.autocomplete.refilter();
     }
   }
 }

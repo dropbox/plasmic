@@ -1,10 +1,6 @@
 import { Scope, PartialLogic, LogicScaffold, ScopeStrings } from "./types";
 import { Layer } from "./layer";
 
-export class LogicLayer<S extends Scope> extends Layer<S> {
-  extractLogic: (seed: Layer<S>) => PartialLogic<S>;
-}
-
 function createExtractLogicDecorator<S extends Scope>(
   update: (method: any, base: PartialLogic<S>) => PartialLogic<S>
 ) {
@@ -20,6 +16,9 @@ function createExtractLogicDecorator<S extends Scope>(
         },
         actions: {
           get: () => seed.actions
+        },
+        utilities: {
+          get: () => seed.utilities
         }
       });
 
@@ -47,6 +46,13 @@ function createFeatureScaffold(strings, feature) {
       (acc, action) => ({
         ...(acc as any),
         [action]: createActionScaffold(strings, feature, action)
+      }),
+      {}
+    ),
+    provides: strings[feature].utilities.reduce(
+      (acc, utility) => ({
+        ...(acc as any),
+        [utility]: createUtilityScaffold(strings, feature, utility)
       }),
       {}
     )
@@ -80,6 +86,24 @@ function createActionScaffold(strings, feature, action) {
   };
 }
 
+function createUtilityScaffold(strings, feature, utility) {
+  return createExtractLogicDecorator((method, base) => {
+    base.utilities = base.utilities || {};
+    base.utilities[feature] = base.utilities[feature] || {};
+
+    return {
+      ...(base as any),
+      utilities: {
+        ...(base.utilities as any),
+        [feature]: {
+          ...(base.utilities[feature] as any),
+          [utility]: method
+        }
+      }
+    };
+  });
+}
+
 function createReducerScaffold(strings, feature, action, state) {
   return createExtractLogicDecorator((method, base) => {
     base.reducers = base.reducers || {};
@@ -102,7 +126,7 @@ function createReducerScaffold(strings, feature, action, state) {
   });
 }
 
-export function createLogicScaffold<S extends Scope>(
+export function createLogicDecorators<S extends Scope>(
   strings: ScopeStrings<S>
 ): LogicScaffold<S> {
   return Object.keys(strings).reduce(
@@ -115,7 +139,7 @@ export function createLogicScaffold<S extends Scope>(
 }
 
 export function extractLogic<S extends Scope>(
-  layers: LogicLayer<S>[],
+  layers: Layer<S>[],
   seed: Layer<S>
 ): PartialLogic<S>[] {
   return layers.map(layer => layer.extractLogic(seed));

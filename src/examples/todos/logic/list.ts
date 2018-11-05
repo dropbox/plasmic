@@ -1,4 +1,4 @@
-import { LogicLayer } from "../../../core/logic_layer";
+import { Layer } from "../../../core/layer";
 import {
   TodoScope,
   todos,
@@ -9,7 +9,7 @@ import {
   Completed
 } from "../types";
 
-export class ListLayer<Data = {}> extends LogicLayer<TodoScope<Data>> {
+export class ListLayer<Data = {}> extends Layer<TodoScope<Data>> {
   @todos.on.addTodo.update.allTodos()
   updateOnAdd(allTodos: Todo[], label: Label, data?: Data) {
     return [
