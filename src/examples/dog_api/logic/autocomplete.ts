@@ -1,10 +1,4 @@
-import {
-  DogApiScope,
-  autocomplete,
-  AutocompleteFeature,
-  dog,
-  DogFeature
-} from "../types";
+import { autocomplete, AutocompleteFeature } from "../types";
 import { Layer } from "../../../core/layer";
 
 export type AutocompleteLayerScope = {

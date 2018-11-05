@@ -1,4 +1,4 @@
-import { Feature, ScopeStrings } from "../../core/types";
+import { Feature, ScopeStrings, FeatureStrings } from "../../core/types";
 import { createLogicDecorators } from "../../core/decorators";
 
 export type Id = number;
@@ -32,22 +32,16 @@ export type TodoFeature<Data = {}> = Feature<
   }
 >;
 
-export type TodoScope<Data = {}> = {
-  todos: TodoFeature<Data>;
-};
+export const todosStrings = {
+  actions: [
+    "addTodo",
+    "toggleCompleted",
+    "deleteTodo",
+    "refilter",
+    "updateFilter"
+  ],
+  state: ["allTodos", "filteredTodos", "currentFilter", "nextId"],
+  utilities: ["renderTodo"]
+} as FeatureStrings<TodoFeature>;
 
-export const todoStrings = {
-  todos: {
-    actions: [
-      "addTodo",
-      "toggleCompleted",
-      "deleteTodo",
-      "refilter",
-      "updateFilter"
-    ],
-    state: ["allTodos", "filteredTodos", "currentFilter", "nextId"],
-    utilities: ["renderTodo"]
-  }
-} as ScopeStrings<TodoScope>;
-
-export const { todos } = createLogicDecorators(todoStrings);
+export const { todos } = createLogicDecorators({ todos: todosStrings });

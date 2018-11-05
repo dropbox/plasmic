@@ -1,8 +1,12 @@
 import * as React from "react";
 import { ReactLayer } from "../../../core";
-import { TodoScope } from "../types";
+import { TodoFeature } from "../types";
 
-export class Filter extends ReactLayer<TodoScope> {
+export type FilterScope = {
+  todos: TodoFeature;
+};
+
+export class Filter extends ReactLayer<FilterScope> {
   static statuses = {
     OFF: "Off",
     COMPLETE: "Complete",

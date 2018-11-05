@@ -26,14 +26,10 @@ export type Feature<
   utilities: U;
 };
 
-export type FeatureStrings<
-  A extends ActionShape = ActionShape,
-  S extends StatusShape = StatusShape,
-  U extends UtilityShape = UtilityShape
-> = {
-  actions: (keyof A)[];
-  state: (keyof S)[];
-  utilities: (keyof U)[];
+export type FeatureStrings<F extends Feature> = {
+  actions: (keyof F["actions"])[];
+  state: (keyof F["state"])[];
+  utilities: (keyof F["utilities"])[];
 };
 
 export type Scope = {
@@ -41,11 +37,7 @@ export type Scope = {
 };
 
 export type ScopeStrings<S extends Scope> = {
-  [F in keyof S]: FeatureStrings<
-    S[F]["actions"],
-    S[F]["state"],
-    S[F]["utilities"]
-  >
+  [F in keyof S]: FeatureStrings<S[F]>
 };
 
 export type Status<S extends Scope> = { [K in keyof S]: S[K]["state"] };

@@ -1,10 +1,14 @@
 import * as React from "react";
 import { ReactLayer } from "../../../core";
-import { TodoScope, Todo } from "../types";
+import { Todo, TodoFeature } from "../types";
 import { Checkbox } from "./checkbox";
 import { DeleteButton } from "./delete_button";
 
-export class List extends ReactLayer<TodoScope> {
+export type ListScope = {
+  todos: TodoFeature;
+};
+
+export class List extends ReactLayer<ListScope> {
   render() {
     return (
       <ul>

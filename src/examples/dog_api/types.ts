@@ -1,4 +1,4 @@
-import { Feature, ScopeStrings } from "../../core/types";
+import { Feature, ScopeStrings, FeatureStrings } from "../../core/types";
 import { createLogicDecorators } from "../../core/decorators";
 
 export type Dog = {
@@ -56,28 +56,25 @@ export type AutocompleteFeature = Feature<
   }
 >;
 
-export type DogApiScope = {
-  dog: DogFeature;
-  api: ApiFeature;
-  autocomplete: AutocompleteFeature;
+export const dogStrings: FeatureStrings<DogFeature> = {
+  actions: ["updateDog", "updateDogList"],
+  state: ["currentDog", "dogList", "dogTypes"],
+  utilities: []
 };
 
-export const dogapiStrings: ScopeStrings<DogApiScope> = {
-  dog: {
-    actions: ["updateDog", "updateDogList"],
-    state: ["currentDog", "dogList", "dogTypes"],
-    utilities: []
-  },
-  api: {
-    actions: ["getDog", "getDogList", "setError", "setLoading"],
-    state: ["error", "loading"],
-    utilities: []
-  },
-  autocomplete: {
-    actions: ["focus", "blur", "change", "refilter"],
-    state: ["focused", "value", "filteredOptions"],
-    utilities: ["getOptions"]
-  }
+export const apiStrings: FeatureStrings<ApiFeature> = {
+  actions: ["getDog", "getDogList", "setError", "setLoading"],
+  state: ["error", "loading"],
+  utilities: []
+};
+export const autocompleteStrings: FeatureStrings<AutocompleteFeature> = {
+  actions: ["focus", "blur", "change", "refilter"],
+  state: ["focused", "value", "filteredOptions"],
+  utilities: ["getOptions"]
 };
 
-export const { dog, api, autocomplete } = createLogicDecorators(dogapiStrings);
+export const { dog, api, autocomplete } = createLogicDecorators({
+  dog: dogStrings,
+  api: apiStrings,
+  autocomplete: autocompleteStrings
+});

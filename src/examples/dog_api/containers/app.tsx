@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ReactContainerLayer } from "../../../core";
-import { dogapiStrings, DogFeature, ApiFeature } from "../types";
+import { DogFeature, ApiFeature, dogStrings, apiStrings } from "../types";
 import { DogLayer } from "../logic/dog";
 import { ApiLayer } from "../logic/api";
 import { DogPic } from "../display/dog_pic";
@@ -13,8 +13,8 @@ export type DogApiAppScope = {
 
 export class DogApiApp extends ReactContainerLayer<DogApiAppScope> {
   strings = {
-    dog: dogapiStrings.dog,
-    api: dogapiStrings.api
+    dog: dogStrings,
+    api: apiStrings
   };
 
   defaultStatus = {

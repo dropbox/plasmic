@@ -1,15 +1,11 @@
 import { Layer } from "../../../core";
-import {
-  TodoScope,
-  todos,
-  Todo,
-  Label,
-  Id,
-  TodoFeature,
-  Completed
-} from "../types";
+import { todos, Todo, Label, Id, TodoFeature, Completed } from "../types";
 
-export class ListLayer<Data = {}> extends Layer<TodoScope<Data>> {
+export type ListLayerScope<Data> = {
+  todos: TodoFeature<Data>;
+};
+
+export class ListLayer<Data = {}> extends Layer<ListLayerScope<Data>> {
   @todos.on.addTodo.update.allTodos()
   updateOnAdd(allTodos: Todo[], label: Label, data?: Data) {
     return [

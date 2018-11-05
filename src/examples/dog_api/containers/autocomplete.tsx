@@ -1,5 +1,5 @@
 import * as React from "react";
-import { dogapiStrings, AutocompleteFeature } from "../types";
+import { AutocompleteFeature, autocompleteStrings } from "../types";
 import { ReactContainerLayer } from "../../../core";
 import { AutocompleteLayer } from "../logic/autocomplete";
 
@@ -9,7 +9,7 @@ export type AutocompleteScope = {
 
 export class Autocomplete extends ReactContainerLayer<AutocompleteScope> {
   strings = {
-    autocomplete: dogapiStrings.autocomplete
+    autocomplete: autocompleteStrings
   };
 
   defaultStatus = {
