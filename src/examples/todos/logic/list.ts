@@ -1,4 +1,4 @@
-import { Layer } from "../../../core/layer";
+import { Layer } from "../../../core";
 import {
   TodoScope,
   todos,

@@ -1,22 +1,22 @@
 import * as React from "react";
-import { Layer, LayerContext } from "./layer";
+import { Layer, EffectContext } from "./layer";
 import { StatusContainer, SubscriptionHandle } from "./status_container";
 import { ChildStatusContainer } from "./child_status_container";
 import { ScopeStrings, Status, Scope, Logic } from "./types";
 import { extractLogic } from "./decorators";
 import { CompleteLogic } from "./complete_logic";
 
-export const LayerReactContext = React.createContext<LayerContext<Scope>>(
-  {} as LayerContext<Scope>
+export const ReactEffectContext = React.createContext<EffectContext<Scope>>(
+  {} as EffectContext<Scope>
 );
 
-export abstract class ContainerLayer<
+export abstract class ReactContainerLayer<
   S extends Scope,
   InnerScope extends Partial<S> = S,
   Props = {},
   State = {}
 > extends React.Component<Props, State> implements Layer<S> {
-  static contextType = LayerReactContext;
+  static contextType = ReactEffectContext;
 
   private container: StatusContainer<S>;
   private subscription: SubscriptionHandle;
@@ -116,12 +116,12 @@ export abstract class ContainerLayer<
 }
 
 function MappingLayer<S extends Scope>(
-  props: LayerContext<S> & React.HTMLProps<{}>
+  props: EffectContext<S> & React.HTMLProps<{}>
 ) {
   return (
-    <LayerReactContext.Consumer>
+    <ReactEffectContext.Consumer>
       {context => (
-        <LayerReactContext.Provider
+        <ReactEffectContext.Provider
           value={{
             container: props.container,
             layers: props.layers,
@@ -129,8 +129,8 @@ function MappingLayer<S extends Scope>(
           }}
         >
           {props.children}
-        </LayerReactContext.Provider>
+        </ReactEffectContext.Provider>
       )}
-    </LayerReactContext.Consumer>
+    </ReactEffectContext.Consumer>
   );
 }

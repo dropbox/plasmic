@@ -1,10 +1,8 @@
 import * as React from "react";
-import { ContainerLayer } from "../../../core/container_layer";
+import { ReactContainerLayer } from "../../../core";
 import {
-  DogApiScope,
   dogapiStrings,
   Dog,
-  api,
   DogFeature,
   ApiFeature
 } from "../../dog_api/types";
@@ -13,17 +11,10 @@ import { ApiLayer } from "../../dog_api/logic/api";
 import { FilterLayer } from "../../todos/logic/filter";
 import { ListLayer } from "../../todos/logic/list";
 import { IdLayer } from "../../todos/logic/id";
-import { AutocompleteLayer } from "../../dog_api/logic/autocomplete";
-import {
-  TodoScope,
-  todoStrings,
-  Todo,
-  todos,
-  TodoFeature
-} from "../../todos/types";
+import { todoStrings, Todo, todos, TodoFeature } from "../../todos/types";
 import { List } from "../../todos/display/list";
 import { Filter } from "../../todos/display/filters";
-import { TodogInput } from "./todog_input";
+import { TodogInput } from "../display/todog_input";
 import { DogPic } from "../../dog_api/display/dog_pic";
 import { Layer } from "../../../core/layer";
 
@@ -33,7 +24,7 @@ export type TodogAppScope = {
   api: ApiFeature;
 };
 
-export class TodogApp extends ContainerLayer<TodogAppScope> {
+export class TodogApp extends ReactContainerLayer<TodogAppScope> {
   readonly strings = {
     ...dogapiStrings,
     ...todoStrings

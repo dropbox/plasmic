@@ -1,21 +1,22 @@
 import { ChildStatusContainer } from "./child_status_container";
 import { CompleteLogic } from "./complete_logic";
-import { ContainerLayer, LayerReactContext } from "./container_layer";
+import {
+  ReactContainerLayer,
+  ReactEffectContext
+} from "./react_container_layer";
 import { extractLogic, createLogicDecorators } from "./decorators";
-import { DisplayLayer } from "./display_layer";
-import { Layer, LayerContext } from "./layer";
+import { ReactLayer } from "./react_layer";
+import { Layer } from "./layer";
 import { StatusContainer } from "./status_container";
-import * as Layers from "./types";
 
 export {
   ChildStatusContainer,
   CompleteLogic,
-  ContainerLayer,
-  LayerReactContext,
+  ReactContainerLayer,
+  ReactEffectContext,
   extractLogic,
   createLogicDecorators,
-  DisplayLayer,
+  ReactLayer,
   Layer,
-  StatusContainer,
-  Layers
+  StatusContainer
 };

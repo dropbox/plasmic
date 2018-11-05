@@ -1,6 +1,6 @@
 import * as React from "react";
-import { ContainerLayer } from "../../../core/container_layer";
-import { DogApiScope, dogapiStrings, DogFeature, ApiFeature } from "../types";
+import { ReactContainerLayer } from "../../../core";
+import { dogapiStrings, DogFeature, ApiFeature } from "../types";
 import { DogLayer } from "../logic/dog";
 import { ApiLayer } from "../logic/api";
 import { DogPic } from "../display/dog_pic";
@@ -11,7 +11,7 @@ export type DogApiAppScope = {
   api: ApiFeature;
 };
 
-export class DogApiApp extends ContainerLayer<DogApiAppScope> {
+export class DogApiApp extends ReactContainerLayer<DogApiAppScope> {
   strings = {
     dog: dogapiStrings.dog,
     api: dogapiStrings.api

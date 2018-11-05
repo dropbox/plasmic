@@ -1,15 +1,15 @@
 import * as React from "react";
 import { Scope, Status, Actions, Logic, Utilities } from "./types";
-import { Layer, LayerContext } from "./layer";
+import { Layer, EffectContext } from "./layer";
 import { StatusContainer } from "./status_container";
 import { CompleteLogic } from "./complete_logic";
 import { extractLogic } from "./decorators";
-import { LayerReactContext } from "./container_layer";
+import { ReactEffectContext } from "./react_container_layer";
 
-export class DisplayLayer<S extends Scope = {}, Props = {}, State = {}>
+export class ReactLayer<S extends Scope = {}, Props = {}, State = {}>
   extends React.Component<Props, State>
   implements Layer<S> {
-  static contextType = LayerReactContext;
+  static contextType = ReactEffectContext;
   public get status(): Status<S> {
     return this.container.getStatus();
   }

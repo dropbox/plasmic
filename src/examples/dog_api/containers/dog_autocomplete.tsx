@@ -5,7 +5,7 @@ import {
   AutocompleteFeature,
   DogFeature
 } from "../types";
-import { ContainerLayer } from "../../../core/container_layer";
+import { ReactContainerLayer } from "../../../core";
 import { DogAutocompleteLayer } from "../logic/dog_autocomplete";
 import { Autocomplete } from "./autocomplete";
 
@@ -14,7 +14,7 @@ export type DogAutocompleteScope = {
   dog: DogFeature;
 };
 
-export class DogAutocomplete extends ContainerLayer<
+export class DogAutocomplete extends ReactContainerLayer<
   DogApiScope,
   DogAutocompleteScope
 > {

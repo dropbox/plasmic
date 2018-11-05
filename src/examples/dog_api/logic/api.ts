@@ -33,7 +33,7 @@ export class ApiLayer extends Layer<DogApiScope> {
   }
 
   @api.on.setError.update.error()
-  setError(previous: ApiFeature["state"], error: string) {
+  setError(currentError: string, error: string) {
     return error;
   }
 

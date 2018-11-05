@@ -1,13 +1,13 @@
 import * as React from "react";
 import { dogapiStrings, AutocompleteFeature } from "../types";
-import { ContainerLayer } from "../../../core/container_layer";
+import { ReactContainerLayer } from "../../../core";
 import { AutocompleteLayer } from "../logic/autocomplete";
 
 export type AutocompleteScope = {
   autocomplete: AutocompleteFeature;
 };
 
-export class Autocomplete extends ContainerLayer<AutocompleteScope> {
+export class Autocomplete extends ReactContainerLayer<AutocompleteScope> {
   strings = {
     autocomplete: dogapiStrings.autocomplete
   };

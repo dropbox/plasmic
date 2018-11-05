@@ -1,8 +1,8 @@
 import * as React from "react";
-import { DisplayLayer } from "../../../core/display_layer";
+import { ReactLayer } from "../../../core";
 import { TodoScope, Completed, Id } from "../types";
 
-export class Checkbox extends DisplayLayer<
+export class Checkbox extends ReactLayer<
   TodoScope,
   { id: Id; completed: Completed }
 > {

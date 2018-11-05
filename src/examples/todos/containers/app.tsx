@@ -6,9 +6,9 @@ import { Filter } from "../display/filters";
 import { FilterLayer } from "../logic/filter";
 import { ListLayer } from "../logic/list";
 import { IdLayer } from "../logic/id";
-import { ContainerLayer } from "../../../core/container_layer";
+import { ReactContainerLayer } from "../../../core";
 
-export class TodoApp extends ContainerLayer<TodoScope> {
+export class TodoApp extends ReactContainerLayer<TodoScope> {
   strings = todoStrings;
 
   defaultStatus = {

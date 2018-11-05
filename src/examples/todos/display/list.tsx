@@ -1,10 +1,10 @@
 import * as React from "react";
-import { DisplayLayer } from "../../../core/display_layer";
+import { ReactLayer } from "../../../core";
 import { TodoScope, Todo } from "../types";
 import { Checkbox } from "./checkbox";
 import { DeleteButton } from "./delete_button";
 
-export class List extends DisplayLayer<TodoScope> {
+export class List extends ReactLayer<TodoScope> {
   render() {
     return (
       <ul>

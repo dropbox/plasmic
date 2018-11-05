@@ -1,8 +1,8 @@
 import * as React from "react";
-import { DisplayLayer } from "../../../core/display_layer";
+import { ReactLayer } from "../../../core";
 import { TodoScope } from "../types";
 
-export class Filter extends DisplayLayer<TodoScope> {
+export class Filter extends ReactLayer<TodoScope> {
   static statuses = {
     OFF: "Off",
     COMPLETE: "Complete",

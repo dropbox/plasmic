@@ -1,6 +1,5 @@
 import * as React from "react";
-import { DisplayLayer } from "../../../core/display_layer";
-import { DogApiScope, Dog } from "../types";
+import { Dog } from "../types";
 
 export type DogPicProps = {
   dog: Dog | null;

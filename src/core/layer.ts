@@ -15,7 +15,7 @@ export class Layer<S extends Scope> {
   extractLogic: (seed: Layer<S>) => PartialLogic<S>;
 }
 
-export type LayerContext<S extends Scope> = {
+export type EffectContext<S extends Scope> = {
   container: StatusContainer<S>;
   layers: Layer<Partial<S>>[];
   strings: ScopeStrings<S>;
