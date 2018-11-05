@@ -12,15 +12,16 @@ import { ApiLayer } from "../../dog_api/logic/api";
 import { FilterLayer } from "../../todos/logic/filter";
 import { ListLayer } from "../../todos/logic/list";
 import { IdLayer } from "../../todos/logic/id";
-import { todosStrings, Todo, todos, TodoFeature } from "../../todos/types";
+import { todosStrings, Todo, todos, TodosFeature } from "../../todos/types";
 import { List } from "../../todos/display/list";
 import { Filter } from "../../todos/display/filters";
 import { TodogInput } from "../display/todog_input";
 import { DogPic } from "../../dog_api/display/dog_pic";
+import { LoadingIndicator } from "../../dog_api/display/loading_indicator";
 import { Layer } from "../../../core/layer";
 
 export type TodogAppScope = {
-  todos: TodoFeature<Dog>;
+  todos: TodosFeature<Dog>;
   dog: DogFeature;
   api: ApiFeature;
 };
@@ -73,9 +74,13 @@ export class TodogApp extends ReactContainerLayer<TodogAppScope> {
   }
 
   display() {
+    const { currentDog } = this.status.dog;
+    const { loading } = this.status.api;
+
     return (
       <React.Fragment>
         <TodogInput />
+        {loading ? <LoadingIndicator /> : <DogPic dog={currentDog} />}
         <List />
         <Filter />
       </React.Fragment>

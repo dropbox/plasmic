@@ -1,9 +1,9 @@
 import * as React from "react";
 import { ReactLayer } from "../../../core";
-import { Id, TodoFeature } from "../types";
+import { Id, TodosFeature } from "../types";
 
 export type DeleteButtonScope = {
-  todos: TodoFeature;
+  todos: TodosFeature;
 };
 
 export type DeleteButtonProps = { id: Id };

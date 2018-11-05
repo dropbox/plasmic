@@ -1,8 +1,8 @@
-import { todos, TodoFeature } from "../types";
+import { todos, TodosFeature } from "../types";
 import { Layer } from "../../../core";
 
 export type IdLayerScope<Data> = {
-  todos: TodoFeature<Data>;
+  todos: TodosFeature<Data>;
 };
 
 export class IdLayer<Data = {}> extends Layer<IdLayerScope<Data>> {

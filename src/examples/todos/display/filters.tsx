@@ -1,9 +1,9 @@
 import * as React from "react";
 import { ReactLayer } from "../../../core";
-import { TodoFeature } from "../types";
+import { TodosFeature } from "../types";
 
 export type FilterScope = {
-  todos: TodoFeature;
+  todos: TodosFeature;
 };
 
 export class Filter extends ReactLayer<FilterScope> {

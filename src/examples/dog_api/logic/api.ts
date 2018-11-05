@@ -35,7 +35,14 @@ export class ApiLayer extends Layer<ApiLayerScope> {
     return error;
   }
 
+  @api.on.setLoading.update.loading()
+  setLoading(currentLoading: boolean, loading: boolean) {
+    return loading;
+  }
+
   async doAjax(url) {
+    this.actions.api.setLoading(true);
+
     try {
       const httpResponse = await fetch(url);
       const dogResponse: DogResponse = await httpResponse.json();
@@ -48,6 +55,8 @@ export class ApiLayer extends Layer<ApiLayerScope> {
     } catch (e) {
       this.actions.api.setError(e.toString());
     }
+
+    this.actions.api.setLoading(false);
 
     return null;
   }

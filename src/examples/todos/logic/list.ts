@@ -1,8 +1,8 @@
 import { Layer } from "../../../core";
-import { todos, Todo, Label, Id, TodoFeature, Completed } from "../types";
+import { todos, Todo, Label, Id, TodosFeature, Completed } from "../types";
 
 export type ListLayerScope<Data> = {
-  todos: TodoFeature<Data>;
+  todos: TodosFeature<Data>;
 };
 
 export class ListLayer<Data = {}> extends Layer<ListLayerScope<Data>> {
@@ -45,7 +45,7 @@ export class ListLayer<Data = {}> extends Layer<ListLayerScope<Data>> {
   }
 
   @todos.observe()
-  triggerRefilter(previous: TodoFeature["status"]) {
+  triggerRefilter(previous: TodosFeature["status"]) {
     if (
       previous.allTodos !== this.status.todos.allTodos ||
       previous.currentFilter !== this.status.todos.currentFilter

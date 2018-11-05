@@ -5,6 +5,7 @@ import { DogLayer } from "../logic/dog";
 import { ApiLayer } from "../logic/api";
 import { DogPic } from "../display/dog_pic";
 import { DogAutocomplete } from "./dog_autocomplete";
+import { LoadingIndicator } from "../display/loading_indicator";
 
 export type DogApiAppScope = {
   dog: DogFeature;
@@ -37,12 +38,13 @@ export class DogApiApp extends ReactContainerLayer<DogApiAppScope> {
 
   display() {
     const { currentDog } = this.status.dog;
+    const { loading } = this.status.api;
 
     return (
       <React.Fragment>
         <DogAutocomplete />
         <div>
-          <DogPic dog={currentDog} />
+          {loading ? <LoadingIndicator /> : <DogPic dog={currentDog} />}
         </div>
       </React.Fragment>
     );

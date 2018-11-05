@@ -18,7 +18,11 @@ const counterStrings: FeatureStrings<CounterFeature> = {
   utilities: []
 };
 
-const { counter } = createLogicDecorators({ counter: counterStrings });
+const { counter } = createLogicDecorators<{
+  counter: CounterFeature;
+}>({
+  counter: counterStrings
+});
 
 class CounterLogicLayer extends Layer<{ counter: CounterFeature }> {
   @counter.on.increment.update.count()

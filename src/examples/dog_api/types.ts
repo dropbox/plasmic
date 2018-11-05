@@ -73,7 +73,11 @@ export const autocompleteStrings: FeatureStrings<AutocompleteFeature> = {
   utilities: ["getOptions"]
 };
 
-export const { dog, api, autocomplete } = createLogicDecorators({
+export const { dog, api, autocomplete } = createLogicDecorators<{
+  dog: DogFeature;
+  api: ApiFeature;
+  autocomplete: AutocompleteFeature;
+}>({
   dog: dogStrings,
   api: apiStrings,
   autocomplete: autocompleteStrings

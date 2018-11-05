@@ -1,9 +1,9 @@
 import * as React from "react";
 import { ReactLayer } from "../../../core";
-import { Completed, Id, TodoFeature } from "../types";
+import { Completed, Id, TodosFeature } from "../types";
 
 export type CheckboxScope = {
-  todos: TodoFeature;
+  todos: TodosFeature;
 };
 
 export type CheckboxProps = { id: Id; completed: Completed };

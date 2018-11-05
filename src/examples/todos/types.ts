@@ -13,7 +13,7 @@ export type Todo<Data = {}> = {
   data: Data;
 };
 
-export type TodoFeature<Data = {}> = Feature<
+export type TodosFeature<Data = {}> = Feature<
   {
     addTodo: (label: Label, data?: Data) => void;
     toggleCompleted: (id: Id) => void;
@@ -42,6 +42,10 @@ export const todosStrings = {
   ],
   status: ["allTodos", "filteredTodos", "currentFilter", "nextId"],
   utilities: ["renderTodo"]
-} as FeatureStrings<TodoFeature>;
+} as FeatureStrings<TodosFeature>;
 
-export const { todos } = createLogicDecorators({ todos: todosStrings });
+export const { todos } = createLogicDecorators<{
+  todos: TodosFeature;
+}>({
+  todos: todosStrings
+});

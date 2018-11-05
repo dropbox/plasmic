@@ -1,5 +1,5 @@
 import * as React from "react";
-import { todosStrings, todos, Todo, TodoFeature } from "../types";
+import { todosStrings, todos, Todo, TodosFeature } from "../types";
 import { Input } from "../display/input";
 import { List } from "../display/list";
 import { Filter } from "../display/filters";
@@ -9,7 +9,7 @@ import { IdLayer } from "../logic/id";
 import { ReactContainerLayer } from "../../../core";
 
 export type TodoAppScope = {
-  todos: TodoFeature;
+  todos: TodosFeature;
 };
 
 export class TodoApp extends ReactContainerLayer<TodoAppScope> {

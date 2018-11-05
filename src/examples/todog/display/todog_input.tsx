@@ -1,12 +1,12 @@
 import * as React from "react";
 import { ReactLayer } from "../../../core";
-import { TodoFeature } from "../../todos/types";
+import { TodosFeature } from "../../todos/types";
 import { DogFeature } from "../../dog_api/types";
 import { DogAutocomplete } from "../../dog_api/containers/dog_autocomplete";
 import { DogPic } from "../../dog_api/display/dog_pic";
 
 export type TodogInputScope = {
-  todos: TodoFeature;
+  todos: TodosFeature;
   dog: DogFeature;
 };
 export class TodogInput extends ReactLayer<TodogInputScope> {

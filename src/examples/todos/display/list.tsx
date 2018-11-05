@@ -1,11 +1,11 @@
 import * as React from "react";
 import { ReactLayer } from "../../../core";
-import { Todo, TodoFeature } from "../types";
+import { Todo, TodosFeature } from "../types";
 import { Checkbox } from "./checkbox";
 import { DeleteButton } from "./delete_button";
 
 export type ListScope = {
-  todos: TodoFeature;
+  todos: TodosFeature;
 };
 
 export class List extends ReactLayer<ListScope> {
