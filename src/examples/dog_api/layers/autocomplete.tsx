@@ -1,17 +1,16 @@
 import * as React from "react";
-import { AutocompleteFeature, autocompleteStrings } from "../types";
-import { ReactContainerLayer } from "../../../core";
+import { AutocompleteFeature } from "../types";
+import { Layer, reactContainerLayer } from "../../../core";
 import { AutocompleteLayer } from "../logic/autocomplete";
 
 export type AutocompleteScope = {
   autocomplete: AutocompleteFeature;
 };
 
-export class Autocomplete extends ReactContainerLayer<AutocompleteScope> {
-  strings = {
-    autocomplete: autocompleteStrings
-  };
+export interface Autocomplete extends Layer<AutocompleteScope> {}
 
+@reactContainerLayer
+export class Autocomplete extends React.Component {
   defaultStatus = {
     autocomplete: {
       value: "",
@@ -20,9 +19,13 @@ export class Autocomplete extends ReactContainerLayer<AutocompleteScope> {
     }
   };
 
-  logic = [new AutocompleteLayer()];
+  layers = [new AutocompleteLayer()];
 
-  display() {
+  componentWillMount() {
+    this.actions.autocomplete.fetchOptions();
+  }
+
+  render() {
     const { blur, focus, change } = this.actions.autocomplete;
     const { value, filteredOptions, focused } = this.status.autocomplete;
 

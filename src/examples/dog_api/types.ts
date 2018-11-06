@@ -1,5 +1,5 @@
-import { Feature, ScopeStrings, FeatureStrings } from "../../core/types";
-import { createLogicDecorators } from "../../core/decorators";
+import { Feature, FeatureStrings } from "../../core/types";
+import { createLogicDecorators } from "../../core";
 
 export type Dog = {
   dogType: string;
@@ -45,6 +45,7 @@ export type AutocompleteFeature = Feature<
     blur: () => void;
     change: (value: string) => void;
     refilter: () => void;
+    fetchOptions: () => void;
   },
   {
     value: string;
@@ -68,7 +69,7 @@ export const apiStrings: FeatureStrings<ApiFeature> = {
   utilities: []
 };
 export const autocompleteStrings: FeatureStrings<AutocompleteFeature> = {
-  actions: ["focus", "blur", "change", "refilter"],
+  actions: ["focus", "blur", "change", "refilter", "fetchOptions"],
   status: ["focused", "value", "filteredOptions"],
   utilities: ["getOptions"]
 };

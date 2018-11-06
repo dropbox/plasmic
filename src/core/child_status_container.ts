@@ -1,5 +1,5 @@
 import { StatusContainer } from "./status_container";
-import { Scope, ScopeStrings, Status, Logic } from "./types";
+import { Scope, ScopeStrings, Status } from "./types";
 
 export class ChildStatusContainer<S extends Scope> extends StatusContainer<S> {
   constructor(

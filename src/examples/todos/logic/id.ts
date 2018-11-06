@@ -5,8 +5,9 @@ export type IdLayerScope<Data> = {
   todos: TodosFeature<Data>;
 };
 
-export class IdLayer<Data = {}> extends Layer<IdLayerScope<Data>> {
-  @todos.on.addTodo.update.nextId()
+export interface IdLayer<Data = {}> extends Layer<IdLayerScope<Data>> {}
+export class IdLayer<Data = {}> {
+  @todos.on.addTodo.update.nextId
   updateOnAddTodo(nextId: number) {
     return nextId + 1;
   }

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ReactLayer } from "../../../core";
+import { Layer, reactLayer } from "../../../core";
 import { Id, TodosFeature } from "../types";
 
 export type DeleteButtonScope = {
@@ -8,10 +8,10 @@ export type DeleteButtonScope = {
 
 export type DeleteButtonProps = { id: Id };
 
-export class DeleteButton extends ReactLayer<
-  DeleteButtonScope,
-  DeleteButtonProps
-> {
+export interface DeleteButton extends Layer<DeleteButtonScope> {}
+
+@reactLayer
+export class DeleteButton extends React.Component<DeleteButtonProps> {
   onClick = () => {
     this.actions.todos.deleteTodo(this.props.id);
   };

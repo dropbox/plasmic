@@ -1,73 +1,60 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Feature, FeatureStrings } from "../../core/types";
-import { createLogicDecorators, ReactContainerLayer, Layer } from "../../core";
+import { createLogicDecorators, Layer } from "../../core";
+import { composeContainer } from "../../core/react_container_layer";
 
-type CounterFeature = Feature<
-  {
-    increment: (diff: number) => void;
-  },
-  {
-    count: number;
-  }
->;
-
-const counterStrings: FeatureStrings<CounterFeature> = {
-  actions: ["increment"],
-  status: ["count"],
-  utilities: []
+type CounterScope = {
+  counter: {
+    actions: {
+      increment: (step: number) => void;
+    };
+    status: {
+      count: number;
+    };
+    utilities: {};
+  };
 };
 
-const { counter } = createLogicDecorators<{
-  counter: CounterFeature;
-}>({
-  counter: counterStrings
+const { counter } = createLogicDecorators<CounterScope>({
+  counter: {
+    actions: ["increment"],
+    status: ["count"],
+    utilities: [] as never[]
+  }
 });
 
-class CounterLogicLayer extends Layer<{ counter: CounterFeature }> {
-  @counter.on.increment.update.count()
-  increment(current: number, diff: number) {
-    return current + diff;
+interface CounterLayer extends Layer<CounterScope> {}
+
+class CounterLayer {
+  @counter.on.increment.update.count
+  increment(current: number, step: number) {
+    return current + step;
   }
 }
 
-class Counter extends ReactContainerLayer<{ counter: CounterFeature }> {
-  strings = {
-    counter: counterStrings
-  };
+type CounterProps = {
+  step: number;
+};
 
-  defaultStatus = {
-    counter: {
-      count: 0
-    }
-  };
-
-  logic = [new CounterLogicLayer()];
-
-  display() {
-    const { count } = this.status.counter;
-    const { increment } = this.actions.counter;
+const Counter = composeContainer<CounterScope, CounterScope, CounterProps>(
+  ({ status, actions }, { step }) => {
+    const { count } = status.counter;
+    const { increment } = actions.counter;
 
     return (
       <React.Fragment>
         <div>{count}</div>
-        <button
-          onClick={() => {
-            increment(1);
-          }}
-        >
-          Up
-        </button>
-        <button
-          onClick={() => {
-            increment(-1);
-          }}
-        >
-          Down
-        </button>
+        <button onClick={() => increment(step)}>Up</button>
+        <button onClick={() => increment(-step)}>Down</button>
       </React.Fragment>
     );
+  },
+  [new CounterLayer()],
+  {
+    counter: {
+      count: 0
+    }
   }
-}
+);
 
-ReactDOM.render(<Counter />, document.getElementById("root"));
+ReactDOM.render(<Counter step={1} />, document.getElementById("root"));

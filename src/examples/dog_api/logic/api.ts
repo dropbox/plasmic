@@ -1,13 +1,15 @@
 import { api, ApiFeature, DogResponse, DogList, DogFeature } from "../types";
 import { Layer } from "../../../core/layer";
+import { error } from "util";
 
 export type ApiLayerScope = {
   api: ApiFeature;
   dog: DogFeature;
 };
 
-export class ApiLayer extends Layer<ApiLayerScope> {
-  @api.on.getDog.observe()
+export interface ApiLayer extends Layer<ApiLayerScope> {}
+export class ApiLayer {
+  @api.on.getDog.observe
   async getDog(previous: ApiFeature["status"], dogType: string) {
     const url = `https://dog.ceo/api/breed/${dogType}/images/random`;
     const dogResponse: DogResponse | null = await this.doAjax(url);
@@ -20,7 +22,7 @@ export class ApiLayer extends Layer<ApiLayerScope> {
     }
   }
 
-  @api.on.getDogList.observe()
+  @api.on.getDogList.observe
   async getDogList() {
     const url = "https://dog.ceo/api/breeds/list/all";
     const dogResponse: DogResponse | null = await this.doAjax(url);
@@ -30,12 +32,12 @@ export class ApiLayer extends Layer<ApiLayerScope> {
     }
   }
 
-  @api.on.setError.update.error()
+  @api.on.setError.update.error
   setError(currentError: string, error: string) {
     return error;
   }
 
-  @api.on.setLoading.update.loading()
+  @api.on.setLoading.update.loading
   setLoading(currentLoading: boolean, loading: boolean) {
     return loading;
   }
@@ -43,14 +45,16 @@ export class ApiLayer extends Layer<ApiLayerScope> {
   async doAjax(url) {
     this.actions.api.setLoading(true);
 
+    let dogResponse: DogResponse = null;
+
     try {
       const httpResponse = await fetch(url);
-      const dogResponse: DogResponse = await httpResponse.json();
 
       if (httpResponse.ok) {
-        return dogResponse;
+        dogResponse = await httpResponse.json();
       } else {
-        this.actions.api.setError(dogResponse.message.toString());
+        const errorResponse: DogResponse = await httpResponse.json();
+        this.actions.api.setError(errorResponse.message.toString());
       }
     } catch (e) {
       this.actions.api.setError(e.toString());
@@ -58,6 +62,6 @@ export class ApiLayer extends Layer<ApiLayerScope> {
 
     this.actions.api.setLoading(false);
 
-    return null;
+    return dogResponse;
   }
 }

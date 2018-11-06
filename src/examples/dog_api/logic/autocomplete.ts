@@ -5,23 +5,24 @@ export type AutocompleteLayerScope = {
   autocomplete: AutocompleteFeature;
 };
 
-export class AutocompleteLayer extends Layer<AutocompleteLayerScope> {
-  @autocomplete.on.focus.update.focused()
+export interface AutocompleteLayer extends Layer<AutocompleteLayerScope> {}
+export class AutocompleteLayer {
+  @autocomplete.on.focus.update.focused
   onFocusUpdateFocused() {
     return true;
   }
 
-  @autocomplete.on.blur.update.focused()
+  @autocomplete.on.blur.update.focused
   onBlurUpdateFocused() {
     return false;
   }
 
-  @autocomplete.on.change.update.value()
+  @autocomplete.on.change.update.value
   onChangeUpdateValue(currentValue: string, newValue: string) {
     return newValue;
   }
 
-  @autocomplete.on.refilter.update.filteredOptions()
+  @autocomplete.on.refilter.update.filteredOptions
   refilter() {
     const searchRegexp = new RegExp(
       this.status.autocomplete.value.toLowerCase()
@@ -31,7 +32,7 @@ export class AutocompleteLayer extends Layer<AutocompleteLayerScope> {
       .filter(option => !!option.match(searchRegexp));
   }
 
-  @autocomplete.observe()
+  @autocomplete.observe
   triggerRefilter(previous: AutocompleteFeature["status"]) {
     if (previous.value !== this.status.autocomplete.value) {
       this.actions.autocomplete.refilter();

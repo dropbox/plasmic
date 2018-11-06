@@ -5,8 +5,10 @@ export type ListLayerScope<Data> = {
   todos: TodosFeature<Data>;
 };
 
-export class ListLayer<Data = {}> extends Layer<ListLayerScope<Data>> {
-  @todos.on.addTodo.update.allTodos()
+export interface ListLayer<Data> extends Layer<ListLayerScope<Data>> {}
+
+export class ListLayer<Data = {}> {
+  @todos.on.addTodo.update.allTodos
   updateOnAdd(allTodos: Todo[], label: Label, data?: Data) {
     return [
       ...allTodos,
@@ -19,18 +21,18 @@ export class ListLayer<Data = {}> extends Layer<ListLayerScope<Data>> {
     ];
   }
 
-  @todos.on.deleteTodo.update.allTodos()
+  @todos.on.deleteTodo.update.allTodos
   updateOnDelete(allTodos: Todo[], id: Id) {
     return allTodos.filter(todo => todo.id !== id);
   }
 
-  @todos.on.refilter.update.filteredTodos()
+  @todos.on.refilter.update.filteredTodos
   updateFilteredOnChange() {
     const filter = this.status.todos.currentFilter;
     return this.filterTodos(filter);
   }
 
-  @todos.on.toggleCompleted.update.allTodos()
+  @todos.on.toggleCompleted.update.allTodos
   toggleCompleted(allTodos: Todo[], id: Id) {
     return allTodos.map(todo => {
       if (todo.id !== id) {
@@ -44,7 +46,7 @@ export class ListLayer<Data = {}> extends Layer<ListLayerScope<Data>> {
     });
   }
 
-  @todos.observe()
+  @todos.observe
   triggerRefilter(previous: TodosFeature["status"]) {
     if (
       previous.allTodos !== this.status.todos.allTodos ||

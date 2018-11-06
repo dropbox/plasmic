@@ -6,17 +6,17 @@ import { Filter } from "../display/filters";
 import { FilterLayer } from "../logic/filter";
 import { ListLayer } from "../logic/list";
 import { IdLayer } from "../logic/id";
-import { ReactContainerLayer } from "../../../core";
+import { reactContainerLayer } from "../../../core";
+import { Layer } from "../../../core/layer";
 
 export type TodoAppScope = {
   todos: TodosFeature;
 };
 
-export class TodoApp extends ReactContainerLayer<TodoAppScope> {
-  strings = {
-    todos: todosStrings
-  };
+export interface TodoApp extends Layer<TodoAppScope> {}
 
+@reactContainerLayer
+export class TodoApp extends React.Component {
   defaultStatus = {
     todos: {
       allTodos: [],
@@ -26,9 +26,9 @@ export class TodoApp extends ReactContainerLayer<TodoAppScope> {
     }
   };
 
-  logic = [new FilterLayer(), new ListLayer(), new IdLayer()];
+  layers = [new FilterLayer(), new ListLayer(), new IdLayer()];
 
-  @todos.provides.renderTodo()
+  @todos.provide.renderTodo
   renderTodo(todo: Todo) {
     return todo.label;
   }

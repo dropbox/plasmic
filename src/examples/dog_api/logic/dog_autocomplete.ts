@@ -7,21 +7,23 @@ import {
 } from "../types";
 import { Layer } from "../../../core/layer";
 
-export type DogAutocompleteLayerScope = {
+export type DogApiAutocompleteLayerScope = {
   dog: DogFeature;
   autocomplete: AutocompleteFeature;
   api: ApiFeature;
 };
 
-export class DogAutocompleteLayer extends Layer<DogAutocompleteLayerScope> {
-  @dog.observe()
+export interface DogApiAutocompleteLayer
+  extends Layer<DogApiAutocompleteLayerScope> {}
+export class DogApiAutocompleteLayer {
+  @dog.observe
   triggerRefilterFromDog(previous: DogFeature["status"]) {
     if (previous.dogTypes !== this.status.dog.dogTypes) {
       this.actions.autocomplete.refilter();
     }
   }
 
-  @autocomplete.observe()
+  @autocomplete.observe
   triggerRefilterFromAutocomplete(previous: AutocompleteFeature["status"]) {
     if (
       previous.value !== this.status.autocomplete.value &&
@@ -31,7 +33,12 @@ export class DogAutocompleteLayer extends Layer<DogAutocompleteLayerScope> {
     }
   }
 
-  @autocomplete.provides.getOptions()
+  @autocomplete.on.fetchOptions.observe
+  triggerGetDogList() {
+    this.actions.api.getDogList();
+  }
+
+  @autocomplete.provide.getOptions
   getOptions() {
     return this.status.dog.dogTypes;
   }

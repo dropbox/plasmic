@@ -1,12 +1,15 @@
 import * as React from "react";
-import { ReactLayer } from "../../../core";
+import { Layer, reactLayer } from "../../../core";
 import { TodosFeature } from "../types";
 
 export type InputScope = {
   todos: TodosFeature;
 };
 
-export class Input extends ReactLayer<InputScope> {
+export interface Input extends Layer<InputScope> {}
+
+@reactLayer
+export class Input extends React.Component {
   onSubmit = e => {
     this.actions.todos.addTodo(e.target.todoLabel.value);
     e.preventDefault();

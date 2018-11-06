@@ -1,24 +1,18 @@
 import * as React from "react";
-import { ReactContainerLayer } from "../../../core";
-import {
-  Dog,
-  DogFeature,
-  ApiFeature,
-  dogStrings,
-  apiStrings
-} from "../../dog_api/types";
+import { reactContainerLayer, Layer } from "../../../core";
+import { Dog, DogFeature, ApiFeature } from "../../dog_api/types";
 import { DogLayer } from "../../dog_api/logic/dog";
 import { ApiLayer } from "../../dog_api/logic/api";
 import { FilterLayer } from "../../todos/logic/filter";
 import { ListLayer } from "../../todos/logic/list";
 import { IdLayer } from "../../todos/logic/id";
-import { todosStrings, Todo, todos, TodosFeature } from "../../todos/types";
+import { Todo, todos, TodosFeature } from "../../todos/types";
 import { List } from "../../todos/display/list";
 import { Filter } from "../../todos/display/filters";
-import { TodogInput } from "../display/todog_input";
-import { DogPic } from "../../dog_api/display/dog_pic";
-import { LoadingIndicator } from "../../dog_api/display/loading_indicator";
-import { Layer } from "../../../core/layer";
+import { CurrentDogPic } from "../../dog_api/layers/current_dog_pic";
+import { LoadingIndicator } from "../../dog_api/components/loading_indicator";
+import { DogApiAutocomplete } from "../../dog_api/layers/dog_api_autocomplete";
+import { DogPic } from "../../dog_api/components/dog_pic";
 
 export type TodogAppScope = {
   todos: TodosFeature<Dog>;
@@ -26,14 +20,11 @@ export type TodogAppScope = {
   api: ApiFeature;
 };
 
-export class TodogApp extends ReactContainerLayer<TodogAppScope> {
-  readonly strings = {
-    dog: dogStrings,
-    api: apiStrings,
-    todos: todosStrings
-  };
+export interface TodogApp extends Layer<TodogAppScope> {}
 
-  readonly defaultStatus = {
+@reactContainerLayer
+export class TodogApp extends React.Component {
+  defaultStatus = {
     todos: {
       allTodos: [],
       filteredTodos: [],
@@ -51,7 +42,7 @@ export class TodogApp extends ReactContainerLayer<TodogAppScope> {
     }
   };
 
-  readonly logic = [
+  layers = [
     new DogLayer(),
     new ApiLayer(),
     new FilterLayer(),
@@ -63,7 +54,15 @@ export class TodogApp extends ReactContainerLayer<TodogAppScope> {
     this.actions.api.getDogList();
   }
 
-  @todos.provides.renderTodo()
+  onSubmit = e => {
+    const { currentDog } = this.status.dog;
+    if (currentDog !== null) {
+      this.actions.todos.addTodo(currentDog.dogType, currentDog);
+    }
+    e.preventDefault();
+  };
+
+  @todos.provide.renderTodo
   renderTodo(todo: Todo<Dog>) {
     return (
       <React.Fragment>
@@ -73,14 +72,17 @@ export class TodogApp extends ReactContainerLayer<TodogAppScope> {
     );
   }
 
-  display() {
-    const { currentDog } = this.status.dog;
+  render() {
     const { loading } = this.status.api;
 
     return (
       <React.Fragment>
-        <TodogInput />
-        {loading ? <LoadingIndicator /> : <DogPic dog={currentDog} />}
+        <form onSubmit={this.onSubmit}>
+          <DogApiAutocomplete />
+          <button type="submit">Add</button>
+          {loading ? <LoadingIndicator /> : <CurrentDogPic />}
+        </form>
+
         <List />
         <Filter />
       </React.Fragment>

@@ -1,12 +1,15 @@
 import * as React from "react";
-import { ReactLayer } from "../../../core";
+import { Layer, reactLayer } from "../../../core";
 import { TodosFeature } from "../types";
 
 export type FilterScope = {
   todos: TodosFeature;
 };
 
-export class Filter extends ReactLayer<FilterScope> {
+export interface Filter extends Layer<FilterScope> {}
+
+@reactLayer
+export class Filter extends React.Component {
   static statuses = {
     OFF: "Off",
     COMPLETE: "Complete",

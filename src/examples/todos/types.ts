@@ -1,5 +1,5 @@
 import { Feature, ScopeStrings, FeatureStrings } from "../../core/types";
-import { createLogicDecorators } from "../../core/decorators";
+import { createLogicDecorators } from "../../core/logic_decorators";
 
 export type Id = number;
 export type Label = string;

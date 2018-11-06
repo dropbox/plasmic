@@ -107,67 +107,35 @@ export type PartialLogic<S extends Scope> = {
   utilities?: PartialUtilities<S>;
 };
 
-export type ObserverDecorator<F, Feat extends Feature> = ((
-  comment?: {
-    feature: F;
-    signature: (previousState: Feat["status"]) => void;
-  }
-) => (t: any, m: string) => void);
+export type MethodDecorator<Signature> = (
+  target: any,
+  method: string,
+  descriptor: TypedPropertyDescriptor<Signature>
+) => void;
 
-export type ActionDecorator<F, A, Feat extends Feature, Act extends Action> = ((
-  comment?: {
-    feature: F;
-    action: A;
-    signature: (previousState: Feat["status"], ...a: ActionArgs<Act>) => void;
-  }
-) => (t: any, m: string) => void);
-
-export type ReducerDecorator<
-  F,
-  A,
-  V,
-  Act extends Action,
-  Val extends Value
-> = ((
-  comment?: {
-    feature: F;
-    action: A;
-    status: V;
-    signature: (currentValue: Val, ...a: ActionArgs<Act>) => Val;
-  }
-) => (t: any, m: string) => void);
-
-export type UtilityDecorator<F, U, Util extends Utility> = ((
-  comment?: {
-    feature: F;
-    utility: U;
-    signature: Util;
-  }
-) => (t: any, m: string) => void);
-
-export type LogicScaffold<S extends Scope> = {
+export type LogicDecorators<S extends Scope> = {
   [F in keyof S]: {
-    observe: ObserverDecorator<F, S[F]>;
+    observe: MethodDecorator<(previousFeatureStatus: S[F]["status"]) => void>;
     on: {
       [A in keyof S[F]["actions"]]: {
-        observe: ActionDecorator<F, A, S[F], S[F]["actions"][A]>;
+        observe: MethodDecorator<
+          (
+            previousFeatureStatus: S[F]["status"],
+            ...args: ActionArgs<S[F]["actions"][A]>
+          ) => void
+        >;
         update: {
-          [V in keyof S[F]["status"]]: ReducerDecorator<
-            F,
-            A,
-            V,
-            S[F]["actions"][A],
-            S[F]["status"][V]
+          [V in keyof S[F]["status"]]: MethodDecorator<
+            (
+              previousValue: S[F]["status"][V],
+              ...args: ActionArgs<S[F]["actions"][A]>
+            ) => S[F]["status"][V]
           >
         };
       }
     };
-    provides: {
-      [U in keyof S[F]["utilities"]]: UtilityDecorator<
-        F,
-        U,
-        S[F]["utilities"][U]
-      >
+    provide: {
+      [U in keyof S[F]["utilities"]]: MethodDecorator<S[F]["utilities"][U]>
     };
   }
 };

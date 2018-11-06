@@ -1,6 +1,6 @@
 import * as React from "react";
-import { ReactLayer } from "../../../core";
-import { Todo, TodosFeature } from "../types";
+import { reactLayer, Layer } from "../../../core";
+import { TodosFeature } from "../types";
 import { Checkbox } from "./checkbox";
 import { DeleteButton } from "./delete_button";
 
@@ -8,7 +8,10 @@ export type ListScope = {
   todos: TodosFeature;
 };
 
-export class List extends ReactLayer<ListScope> {
+export interface List extends Layer<ListScope> {}
+
+@reactLayer
+export class List extends React.Component {
   render() {
     return (
       <ul>
