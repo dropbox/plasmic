@@ -1,5 +1,5 @@
 import * as React from "react";
-import { todosStrings, todos, Todo, TodosFeature } from "../types";
+import { todos, Todo, TodosFeature } from "../types";
 import { Input } from "../display/input";
 import { List } from "../display/list";
 import { Filter } from "../display/filters";

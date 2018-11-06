@@ -254,7 +254,7 @@ function MappingLayer<S extends Scope>(
   );
 }
 
-export function composeContainer<
+export function composeContainerLayer<
   S extends Scope,
   Props = {},
   InnerScope extends Partial<S> = S

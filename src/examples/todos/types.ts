@@ -32,20 +32,18 @@ export type TodosFeature<Data = {}> = Feature<
   }
 >;
 
-export const todosStrings = {
-  actions: [
-    "addTodo",
-    "toggleCompleted",
-    "deleteTodo",
-    "refilter",
-    "updateFilter"
-  ],
-  status: ["allTodos", "filteredTodos", "currentFilter", "nextId"],
-  utilities: ["renderTodo"]
-} as FeatureStrings<TodosFeature>;
-
 export const { todos } = createLogicDecorators<{
   todos: TodosFeature;
 }>({
-  todos: todosStrings
+  todos: {
+    actions: [
+      "addTodo",
+      "toggleCompleted",
+      "deleteTodo",
+      "refilter",
+      "updateFilter"
+    ],
+    status: ["allTodos", "filteredTodos", "currentFilter", "nextId"],
+    utilities: ["renderTodo"]
+  }
 });

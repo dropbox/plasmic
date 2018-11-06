@@ -57,29 +57,24 @@ export type AutocompleteFeature = Feature<
   }
 >;
 
-export const dogStrings: FeatureStrings<DogFeature> = {
-  actions: ["updateDog", "updateDogList"],
-  status: ["currentDog", "dogList", "dogTypes"],
-  utilities: []
-};
-
-export const apiStrings: FeatureStrings<ApiFeature> = {
-  actions: ["getDog", "getDogList", "setError", "setLoading"],
-  status: ["error", "loading"],
-  utilities: []
-};
-export const autocompleteStrings: FeatureStrings<AutocompleteFeature> = {
-  actions: ["focus", "blur", "change", "refilter", "fetchOptions"],
-  status: ["focused", "value", "filteredOptions"],
-  utilities: ["getOptions"]
-};
-
 export const { dog, api, autocomplete } = createLogicDecorators<{
   dog: DogFeature;
   api: ApiFeature;
   autocomplete: AutocompleteFeature;
 }>({
-  dog: dogStrings,
-  api: apiStrings,
-  autocomplete: autocompleteStrings
+  dog: {
+    actions: ["updateDog", "updateDogList"],
+    status: ["currentDog", "dogList", "dogTypes"],
+    utilities: []
+  },
+  api: {
+    actions: ["getDog", "getDogList", "setError", "setLoading"],
+    status: ["error", "loading"],
+    utilities: []
+  },
+  autocomplete: {
+    actions: ["focus", "blur", "change", "refilter", "fetchOptions"],
+    status: ["focused", "value", "filteredOptions"],
+    utilities: ["getOptions"]
+  }
 });

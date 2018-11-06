@@ -1,5 +1,5 @@
 import * as React from "react";
-import { composeContainer } from "../../../core/react_container_layer";
+import { composeContainerLayer } from "../../../core/react_container_layer";
 import { DogFeature, ApiFeature } from "../types";
 import { DogApiAutocomplete } from "./dog_api_autocomplete";
 import { CurrentDogPic } from "./current_dog_pic";
@@ -24,7 +24,7 @@ export const defaultStatus: Status<DogApiAppScope> = {
   }
 };
 
-export const DogApiApp = composeContainer<DogApiAppScope>(
+export const DogApiApp = composeContainerLayer<DogApiAppScope>(
   () => (
     <React.Fragment>
       <DogApiAutocomplete />

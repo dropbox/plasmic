@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { createLogicDecorators, Layer } from "../../core";
-import { composeContainer } from "../../core/react_container_layer";
+import { composeContainerLayer } from "../../core/react_container_layer";
 
 type CounterScope = {
   counter: {
@@ -67,7 +67,7 @@ type CounterProps = {
   step: number;
 };
 
-const Counter = composeContainer<CounterScope, CounterProps>(
+const Counter = composeContainerLayer<CounterScope, CounterProps>(
   ({ status, actions }, { step }) => {
     const { count } = status.counter;
     const { increment, decrement } = actions.counter;
