@@ -2,12 +2,9 @@ import * as React from "react";
 import { Dog } from "../types";
 
 export type DogPicProps = {
-  dog: Dog | null;
+  dog: Dog;
 };
 
 export function DogPic({ dog }: DogPicProps) {
-  if (dog !== null) {
-    return <img alt={dog.dogType} src={dog.url} />;
-  }
-  return null;
+  return <img alt={dog.dogType} src={dog.url} />;
 }

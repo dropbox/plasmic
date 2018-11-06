@@ -8,5 +8,13 @@ export type CurrentDogPicScope = {
 };
 
 export const CurrentDogPic = composeReactLayer<CurrentDogPicScope>(
-  ({ status }) => <DogPic dog={status.dog.currentDog} />
+  ({ status }) => {
+    const { currentDog } = status.dog;
+
+    if (currentDog !== null) {
+      return <DogPic dog={status.dog.currentDog} />;
+    }
+
+    return null;
+  }
 );

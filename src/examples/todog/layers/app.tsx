@@ -10,7 +10,7 @@ import { Todo, todos, TodosFeature } from "../../todos/types";
 import { List } from "../../todos/display/list";
 import { Filter } from "../../todos/display/filters";
 import { CurrentDogPic } from "../../dog_api/layers/current_dog_pic";
-import { LoadingIndicator } from "../../dog_api/components/loading_indicator";
+import { ApiLoadingIndicator } from "../../dog_api/layers/api_loading_indicator";
 import { DogApiAutocomplete } from "../../dog_api/layers/dog_api_autocomplete";
 import { DogPic } from "../../dog_api/components/dog_pic";
 
@@ -73,14 +73,13 @@ export class TodogApp extends React.Component {
   }
 
   render() {
-    const { loading } = this.status.api;
-
     return (
       <React.Fragment>
         <form onSubmit={this.onSubmit}>
           <DogApiAutocomplete />
           <button type="submit">Add</button>
-          {loading ? <LoadingIndicator /> : <CurrentDogPic />}
+          <CurrentDogPic />
+          <ApiLoadingIndicator />
         </form>
 
         <List />

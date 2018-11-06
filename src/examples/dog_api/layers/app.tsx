@@ -7,6 +7,8 @@ import { DogLayer } from "../logic/dog";
 import { ApiLayer } from "../logic/api";
 import { Status } from "../../../core/types";
 import { ApiErrorMessage } from "./api_error_message";
+import { LoadingIndicator } from "../components/loading_indicator";
+import { ApiLoadingIndicator } from "./api_loading_indicator";
 
 export type DogApiAppScope = {
   dog: DogFeature;
@@ -31,6 +33,7 @@ export const DogApiApp = composeContainerLayer<DogApiAppScope>(
       <ApiErrorMessage />
       <DogApiAutocomplete />
       <CurrentDogPic />
+      <ApiLoadingIndicator />
     </React.Fragment>
   ),
   [new DogLayer(), new ApiLayer()],

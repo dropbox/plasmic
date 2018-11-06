@@ -10,6 +10,7 @@ export type ApiErrorMessageScope = {
 export const ApiErrorMessage = composeReactLayer<ApiErrorMessageScope>(
   function({ status }) {
     const { error } = status.api;
+
     if (error) {
       return <ErrorMessage message={error} />;
     }
