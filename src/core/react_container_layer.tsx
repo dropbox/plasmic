@@ -44,132 +44,6 @@ export type ReactContainerProps<
     | null;
 };
 
-export function reactContainerLayer<
-  T extends {
-    new (...args: any[]): React.Component & ContainableLayer<S, InnerScope>;
-  },
-  S extends Scope = Scope,
-  InnerScope extends Partial<S> = S
->(Constructor: T) {
-  return class ReactContainerLayer extends Constructor implements Layer<S> {
-    static contextType = ReactEffectContext;
-
-    private container: StatusContainer<S>;
-    private subscription: SubscriptionHandle;
-
-    get strings() {
-      return this.getAllStrings();
-    }
-
-    get status() {
-      return this.container.getStatus();
-    }
-
-    get actions() {
-      return this.container.getActions(this.getLogic());
-    }
-
-    get utilities() {
-      return this.getLogic().utilities;
-    }
-
-    getAllStrings() {
-      return (extractStrings(this.getAllLayers()) as any) as ScopeStrings<S>;
-    }
-
-    extractLogic(seed: Layer<S>) {
-      return super.extractLogic ? super.extractLogic(seed) : {};
-    }
-
-    extractStrings() {
-      if (super.extractStrings) {
-        return super.extractStrings();
-      }
-      return {} as ScopeStrings<S>;
-    }
-
-    private getLogic(): Logic<S> {
-      const strings = this.getAllStrings();
-      const layers = this.getAllLayers();
-
-      const partialLogic = extractLogic(layers, this);
-
-      return new CompleteLogic(strings, partialLogic) as Logic<S>;
-    }
-
-    private getAllLayers() {
-      const { context, layers } = this;
-      let allLayers = [...layers, this];
-
-      if (context.layers) {
-        allLayers = [...context.layers, ...layers];
-      }
-
-      return allLayers;
-    }
-
-    componentWillMount() {
-      this.initialize();
-      super.componentWillMount && super.componentWillMount();
-    }
-
-    protected initialize() {
-      const strings = this.getAllStrings();
-      if (this.context.container) {
-        this.container = new ChildStatusContainer<S>(
-          strings,
-          this.context.container,
-          this.defaultStatus
-        );
-      } else {
-        this.container = new StatusContainer<S>(strings, this.defaultStatus);
-      }
-
-      if (this.subscription !== undefined) {
-        this.subscription.unsubscribe();
-      }
-
-      this.subscription = this.container.subscribe(() => {
-        this.forceUpdate();
-      });
-    }
-
-    render() {
-      return (
-        <MappingLayer
-          container={this.container}
-          layers={this.getAllLayers()}
-          strings={this.getAllStrings()}
-        >
-          {super.render ? super.render() : this.props.children}
-        </MappingLayer>
-      );
-    }
-  };
-}
-
-function MappingLayer<S extends Scope>(
-  props: EffectContext<S> & React.HTMLProps<{}>
-) {
-  return (
-    <ReactEffectContext.Consumer>
-      {context => (
-        <ReactEffectContext.Provider
-          value={{
-            container: props.container,
-            layers: props.layers,
-            strings: props.strings as ScopeStrings<Scope>
-          }}
-        >
-          {props.children}
-        </ReactEffectContext.Provider>
-      )}
-    </ReactEffectContext.Consumer>
-  );
-}
-
-export interface ReactContainerLayer<S extends Scope> {}
-
 export class ReactContainerLayer<
   S extends Scope,
   InnerScope extends Partial<S> = S
@@ -215,7 +89,7 @@ export class ReactContainerLayer<
     return {} as ScopeStrings<S>;
   }
 
-  private getLogic(): Logic<S> {
+  getLogic(): Logic<S> {
     const strings = this.getAllStrings();
     const layers = this.getAllLayers();
 
@@ -224,7 +98,7 @@ export class ReactContainerLayer<
     return new CompleteLogic(strings, partialLogic) as Logic<S>;
   }
 
-  private getAllLayers() {
+  getAllLayers() {
     const { context, layers } = this;
     let allLayers = [...layers, this];
 
@@ -240,7 +114,7 @@ export class ReactContainerLayer<
     super.componentWillMount && super.componentWillMount();
   }
 
-  protected initialize() {
+  initialize() {
     const strings = this.getAllStrings();
     if (this.context.container) {
       this.container = new ChildStatusContainer<S>(
@@ -278,6 +152,106 @@ export class ReactContainerLayer<
       </MappingLayer>
     );
   }
+}
+
+export function reactContainerLayer<
+  T extends {
+    new (...args: any[]): React.Component & ContainableLayer<S, InnerScope>;
+  },
+  S extends Scope = Scope,
+  InnerScope extends Partial<S> = S
+>(Constructor: T) {
+  return class DecoratedReactContainerLayer extends Constructor
+    implements Layer<S> {
+    static contextType = ReactEffectContext;
+
+    private container: StatusContainer<S>;
+    private subscription: SubscriptionHandle;
+
+    get strings() {
+      return this.getAllStrings();
+    }
+
+    get status() {
+      return this.container.getStatus();
+    }
+
+    get actions() {
+      return this.container.getActions(this.getLogic());
+    }
+
+    get utilities() {
+      return this.getLogic().utilities;
+    }
+
+    getAllStrings(): ScopeStrings<S> {
+      return ReactContainerLayer.prototype.getAllStrings.call(this);
+    }
+
+    extractLogic(seed: Layer<S>) {
+      return super.extractLogic
+        ? super.extractLogic(seed)
+        : ReactContainerLayer.prototype.extractLogic.call(this, seed);
+    }
+
+    extractStrings(): ScopeStrings<S> {
+      if (super.extractStrings) {
+        return super.extractStrings();
+      }
+      return ReactContainerLayer.prototype.extractStrings.call(
+        this
+      ) as ScopeStrings<S>;
+    }
+
+    private getLogic(): Logic<S> {
+      return ReactContainerLayer.prototype.getLogic.call(this);
+    }
+
+    private getAllLayers(): Layer<Partial<S>>[] {
+      return ReactContainerLayer.prototype.getAllLayers.call(this);
+    }
+
+    componentWillMount() {
+      this.initialize();
+      super.componentWillMount && super.componentWillMount();
+    }
+
+    protected initialize() {
+      ReactContainerLayer.prototype.initialize.call(this);
+    }
+
+    render() {
+      return (
+        <MappingLayer
+          container={this.container}
+          layers={this.getAllLayers()}
+          strings={this.getAllStrings()}
+        >
+          {super.render ? super.render() : this.props.children}
+        </MappingLayer>
+      );
+    }
+  };
+}
+
+function MappingLayer<S extends Scope>(
+  props: EffectContext<S> & React.HTMLProps<{}>
+) {
+  return (
+    <ReactEffectContext.Consumer>
+      {context => (
+        <ReactEffectContext.Provider
+          value={{
+            container: props.container,
+            layers: props.layers,
+            strings: props.strings as ScopeStrings<Scope>
+          }}
+        >
+          {props.children}
+        </ReactEffectContext.Provider>
+      )}
+    </ReactEffectContext.Consumer>
+  );
 }
 
 export function composeContainer<

@@ -13,54 +13,26 @@ import { CompleteLogic } from "./complete_logic";
 import { extractLogic } from "./logic_decorators";
 import { ReactEffectContext, Snapshot } from "./react_container_layer";
 
-export function reactLayer<
-  S extends Scope,
-  T extends { new (...args: any[]): React.Component & Layer<S> }
->(Constructor: T) {
-  return class ReactLayer extends Constructor implements Layer<S> {
-    static contextType = ReactEffectContext;
-    public get status(): Status<S> {
-      return this.container.getStatus();
+function getLogic<S extends Scope>() {
+  let lastContainer = null;
+  let lastLayers = null;
+  let lastLogic = null;
+
+  return (): Logic<S> => {
+    if (
+      this.context.layers !== lastLayers ||
+      this.container !== lastContainer
+    ) {
+      lastLayers = this.context.layers;
+      lastContainer = this.container;
+
+      lastLogic = new CompleteLogic(
+        this.context.strings,
+        extractLogic(this.context.layers, this)
+      );
     }
 
-    public get actions(): Actions<S> {
-      return this.container.getActions(this.getLogic());
-    }
-
-    public get utilities(): Utilities<S> {
-      return this.getLogic().utilities;
-    }
-
-    private get container(): StatusContainer<S> {
-      return this.context.container;
-    }
-
-    extractLogic(seed: Layer<S>) {
-      return super.extractLogic ? super.extractLogic(seed) : {};
-    }
-
-    private getLogic = (() => {
-      let lastContainer = null;
-      let lastLayers = null;
-      let lastLogic = null;
-
-      return (): Logic<S> => {
-        if (
-          this.context.layers !== lastLayers ||
-          this.container !== lastContainer
-        ) {
-          lastLayers = this.context.layers;
-          lastContainer = this.container;
-
-          lastLogic = new CompleteLogic(
-            this.context.strings,
-            extractLogic(this.context.layers, this)
-          );
-        }
-
-        return lastLogic;
-      };
-    })();
+    return lastLogic;
   };
 }
 
@@ -94,26 +66,7 @@ export class ReactLayer<S extends Scope>
     return {} as ScopeStrings<S>;
   }
   private getLogic = (() => {
-    let lastContainer = null;
-    let lastLayers = null;
-    let lastLogic = null;
-
-    return (): Logic<S> => {
-      if (
-        this.context.layers !== lastLayers ||
-        this.container !== lastContainer
-      ) {
-        lastLayers = this.context.layers;
-        lastContainer = this.container;
-
-        lastLogic = new CompleteLogic(
-          this.context.strings,
-          extractLogic(this.context.layers, this)
-        );
-      }
-
-      return lastLogic;
-    };
+    return getLogic.call(this);
   })();
   render() {
     return this.props.children({
@@ -122,6 +75,38 @@ export class ReactLayer<S extends Scope>
       utilities: this.utilities
     });
   }
+}
+
+export function reactLayer<
+  S extends Scope,
+  T extends { new (...args: any[]): React.Component & Layer<S> }
+>(Constructor: T) {
+  return class DecoratedReactLayer extends Constructor implements Layer<S> {
+    static contextType = ReactEffectContext;
+    public get status(): Status<S> {
+      return this.container.getStatus();
+    }
+
+    public get actions(): Actions<S> {
+      return this.container.getActions(this.getLogic());
+    }
+
+    public get utilities(): Utilities<S> {
+      return this.getLogic().utilities;
+    }
+
+    private get container(): StatusContainer<S> {
+      return this.context.container;
+    }
+
+    extractLogic(seed: Layer<S>) {
+      return super.extractLogic ? super.extractLogic(seed) : {};
+    }
+
+    private getLogic = (() => {
+      return getLogic.call(this);
+    })();
+  };
 }
 
 export function composeReactLayer<S extends Scope, Props = {}>(
