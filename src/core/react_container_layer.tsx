@@ -282,8 +282,8 @@ export class ReactContainerLayer<
 
 export function composeContainer<
   S extends Scope,
-  InnerScope extends Partial<S> = S,
-  Props = {}
+  Props = {},
+  InnerScope extends Partial<S> = S
 >(
   fn: (snapshot: Snapshot<S>, props: Props) => JSX.Element | null,
   layers: Layer<Partial<S>>[],

@@ -24,9 +24,11 @@ const { counter } = createLogicDecorators<CounterScope>({
   }
 });
 
-interface CounterLayer extends Layer<CounterScope> {}
+interface CounterReducerLayer extends Layer<CounterScope> {}
+interface CounterActionLayer extends Layer<CounterScope> {}
+interface CounterObserverLayer extends Layer<CounterScope> {}
 
-class CounterLayer {
+class CounterReducerLayer {
   @counter.on.increment.update.count
   incrementCount(current: number, step: number) {
     return current + step;
@@ -36,7 +38,8 @@ class CounterLayer {
   decrementCount(current: number, step: number) {
     return current - step;
   }
-
+}
+class CounterActionLayer {
   @counter.on.increment.observe
   observeIncrement(previous: CounterScope["counter"]["status"], step: number) {
     console.log(
@@ -50,7 +53,8 @@ class CounterLayer {
       `decrement: ${previous.count} - ${step} = ${this.status.counter.count}`
     );
   }
-
+}
+class CounterObserverLayer {
   @counter.observe
   observeCounter(previous: CounterScope["counter"]["status"]) {
     console.log(
@@ -63,7 +67,7 @@ type CounterProps = {
   step: number;
 };
 
-const Counter = composeContainer<CounterScope, CounterScope, CounterProps>(
+const Counter = composeContainer<CounterScope, CounterProps>(
   ({ status, actions }, { step }) => {
     const { count } = status.counter;
     const { increment, decrement } = actions.counter;
@@ -76,7 +80,11 @@ const Counter = composeContainer<CounterScope, CounterScope, CounterProps>(
       </React.Fragment>
     );
   },
-  [new CounterLayer()],
+  [
+    new CounterReducerLayer(),
+    new CounterActionLayer(),
+    new CounterObserverLayer()
+  ],
   {
     counter: {
       count: 0
