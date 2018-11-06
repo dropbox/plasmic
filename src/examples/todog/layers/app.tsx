@@ -11,6 +11,7 @@ import { List } from "../../todos/display/list";
 import { Filter } from "../../todos/display/filters";
 import { CurrentDogPic } from "../../dog_api/layers/current_dog_pic";
 import { ApiLoadingIndicator } from "../../dog_api/layers/api_loading_indicator";
+import { ApiErrorMessage } from "../../dog_api/layers/api_error_message";
 import { DogApiAutocomplete } from "../../dog_api/layers/dog_api_autocomplete";
 import { DogPic } from "../../dog_api/components/dog_pic";
 
@@ -50,10 +51,6 @@ export class TodogApp extends React.Component {
     new IdLayer()
   ] as Layer<Partial<TodogAppScope>>[];
 
-  componentDidMount() {
-    this.actions.api.getDogList();
-  }
-
   onSubmit = e => {
     const { currentDog } = this.status.dog;
     if (currentDog !== null) {
@@ -73,11 +70,15 @@ export class TodogApp extends React.Component {
   }
 
   render() {
+    const { currentDog } = this.status.dog;
     return (
       <React.Fragment>
+        <ApiErrorMessage />
         <form onSubmit={this.onSubmit}>
           <DogApiAutocomplete />
-          <button type="submit">Add</button>
+          <button disabled={!currentDog} type="submit">
+            Add
+          </button>
           <CurrentDogPic />
           <ApiLoadingIndicator />
         </form>
