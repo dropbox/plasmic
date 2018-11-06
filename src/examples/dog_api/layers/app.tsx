@@ -6,6 +6,7 @@ import { CurrentDogPic } from "./current_dog_pic";
 import { DogLayer } from "../logic/dog";
 import { ApiLayer } from "../logic/api";
 import { Status } from "../../../core/types";
+import { ApiErrorMessage } from "./api_error_message";
 
 export type DogApiAppScope = {
   dog: DogFeature;
@@ -27,6 +28,7 @@ export const defaultStatus: Status<DogApiAppScope> = {
 export const DogApiApp = composeContainerLayer<DogApiAppScope>(
   () => (
     <React.Fragment>
+      <ApiErrorMessage />
       <DogApiAutocomplete />
       <CurrentDogPic />
     </React.Fragment>

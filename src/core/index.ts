@@ -3,10 +3,11 @@ import { CompleteLogic } from "./complete_logic";
 import {
   reactContainerLayer,
   ReactEffectContext,
-  ContainableLayer
+  ContainableLayer,
+  composeContainerLayer
 } from "./react_container_layer";
 import { extractLogic, createLogicDecorators } from "./logic_decorators";
-import { reactLayer } from "./react_layer";
+import { reactLayer, composeReactLayer } from "./react_layer";
 import { Layer } from "./layer";
 import { StatusContainer } from "./status_container";
 
@@ -20,5 +21,7 @@ export {
   createLogicDecorators,
   reactLayer,
   Layer,
-  StatusContainer
+  StatusContainer,
+  composeContainerLayer,
+  composeReactLayer
 };

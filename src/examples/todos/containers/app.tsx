@@ -33,7 +33,7 @@ export class TodoApp extends React.Component {
     return todo.label;
   }
 
-  display() {
+  render() {
     return (
       <React.Fragment>
         <Input />

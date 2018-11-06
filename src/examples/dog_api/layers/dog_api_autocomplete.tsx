@@ -1,5 +1,5 @@
 import * as React from "react";
-import { composeContainerLayer } from "../../../core/react_container_layer";
+import { composeContainerLayer } from "../../../core";
 import { ApiFeature, DogFeature, AutocompleteFeature } from "../types";
 import { Autocomplete } from "./autocomplete";
 import { DogApiAutocompleteLayer } from "../logic/dog_autocomplete";
