@@ -1,27 +1,27 @@
 import { ChildStatusContainer } from "./child_status_container";
 import { CompleteLogic } from "./complete_logic";
 import {
-  reactContainerLayer,
-  ReactEffectContext,
-  ContainableLayer,
-  composeContainerLayer
-} from "./react_container_layer";
+  containerRegion,
+  ReactRegionContext,
+  ContainerOptions,
+  composeContainerRegion
+} from "./container_region";
 import { extractLogic, createLogicDecorators } from "./logic_decorators";
-import { reactLayer, composeReactLayer } from "./react_layer";
+import { region, composeRegion } from "./region";
 import { Layer } from "./layer";
 import { StatusContainer } from "./status_container";
 
 export {
   ChildStatusContainer,
   CompleteLogic,
-  reactContainerLayer,
-  ReactEffectContext,
-  ContainableLayer,
+  containerRegion,
+  ReactRegionContext,
+  ContainerOptions,
   extractLogic,
   createLogicDecorators,
-  reactLayer,
+  region,
   Layer,
   StatusContainer,
-  composeContainerLayer,
-  composeReactLayer
+  composeContainerRegion,
+  composeRegion
 };

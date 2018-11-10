@@ -1,12 +1,12 @@
 export type Value = any;
 
-export type Action<T extends Value[] = Value[]> = (...args: T) => void;
+export type Action<Args extends Value[] = Value[]> = (...args: Args) => void;
 
-export type Utility<T extends Value[] = Value[], R extends Value = void> = (
-  ...args: T
+export type Utility<Args extends Value[] = Value[], R extends Value = void> = (
+  ...args: Args
 ) => R;
 
-type ActionArgs<T> = T extends Action<infer U> ? U : never;
+export type ActionArgs<T> = T extends Action<infer U> ? U : never;
 
 export type Shape<T> = {
   [key: string]: T;
@@ -66,15 +66,20 @@ export type Observers<S extends Scope> = {
   [F in keyof S]: Observer<S[F]["status"]>
 };
 
-export type Reducer<V extends Value = Value, A extends Action = Action> = (
+export type ValueReducer<V extends Value = Value, A extends Action = Action> = (
   v: V,
   ...a: ActionArgs<A>
 ) => V;
 
-export type Reducers<S extends Scope> = {
+export type StatusReducer<
+  F extends Feature = Feature,
+  A extends Action = Action
+> = (currentStatus: F["status"], ...a: ActionArgs<A>) => Partial<F["status"]>;
+
+export type ValueReducers<S extends Scope> = {
   [F in keyof S]: {
     [A in keyof S[F]["actions"]]: {
-      [V in keyof S[F]["status"]]: Reducer<
+      [V in keyof S[F]["status"]]: ValueReducer<
         S[F]["status"][V],
         S[F]["actions"][A]
       >
@@ -82,26 +87,40 @@ export type Reducers<S extends Scope> = {
   }
 };
 
-export type PartialReducers<S extends Scope> = {
+export type PartialValueReducers<S extends Scope> = {
   [F in keyof S]?: {
     [A in keyof S[F]["actions"]]?: {
-      [V in keyof S[F]["status"]]?: Reducer<
+      [V in keyof S[F]["status"]]?: ValueReducer<
         S[F]["status"][V],
         S[F]["actions"][A]
       >
     }
+  }
+};
+
+export type StatusReducers<S extends Scope> = {
+  [F in keyof S]: {
+    [A in keyof S[F]["actions"]]: StatusReducer<S[F], S[F]["actions"][A]>
+  }
+};
+
+export type PartialStatusReducers<S extends Scope> = {
+  [F in keyof S]?: {
+    [A in keyof S[F]["actions"]]?: StatusReducer<S[F], S[F]["actions"][A]>
   }
 };
 
 export type Logic<S extends Scope> = {
-  reducers: Reducers<S>;
+  valueReducers: ValueReducers<S>;
+  statusReducers: StatusReducers<S>;
   actions: Actions<S>;
   observers: Observers<S>;
   utilities: Utilities<S>;
 };
 
 export type PartialLogic<S extends Scope> = {
-  reducers?: PartialReducers<S>;
+  valueReducers?: PartialValueReducers<S>;
+  statusReducers?: PartialStatusReducers<S>;
   actions?: PartialActions<S>;
   observers?: Partial<Observers<S>>;
   utilities?: PartialUtilities<S>;
@@ -124,14 +143,20 @@ export type LogicDecorators<S extends Scope> = {
             ...args: ActionArgs<S[F]["actions"][A]>
           ) => void
         >;
-        update: {
-          [V in keyof S[F]["status"]]: MethodDecorator<
-            (
-              previousValue: S[F]["status"][V],
-              ...args: ActionArgs<S[F]["actions"][A]>
-            ) => S[F]["status"][V]
-          >
-        };
+        update: MethodDecorator<
+          (
+            previousStatus: S[F]["status"],
+            ...args: ActionArgs<S[F]["actions"][A]>
+          ) => Partial<S[F]["status"]>
+        > &
+          {
+            [V in keyof S[F]["status"]]: MethodDecorator<
+              (
+                previousValue: S[F]["status"][V],
+                ...args: ActionArgs<S[F]["actions"][A]>
+              ) => S[F]["status"][V]
+            >
+          };
       }
     };
     provide: {

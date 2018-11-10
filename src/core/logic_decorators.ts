@@ -20,14 +20,8 @@ function createLogicDecorator<S extends Scope>(
       const thisArg = Object.create(this);
 
       Object.defineProperties(thisArg, {
-        status: {
-          get: () => seed.status
-        },
-        actions: {
-          get: () => seed.actions
-        },
-        utilities: {
-          get: () => seed.utilities
+        seed: {
+          get: () => seed
         }
       });
 
@@ -54,21 +48,21 @@ function createFeatureScaffold(strings, feature) {
       return {
         ...base,
         observers: {
-          ...(base.observers as any),
+          ...base.observers,
           [feature]: method
         }
       };
     }),
     on: strings[feature].actions.reduce(
       (acc, action) => ({
-        ...(acc as any),
+        ...acc,
         [action]: createActionScaffold(strings, feature, action)
       }),
       {}
     ),
     provide: strings[feature].utilities.reduce(
       (acc, utility) => ({
-        ...(acc as any),
+        ...acc,
         [utility]: createUtilityScaffold(strings, feature, utility)
       }),
       {}
@@ -83,22 +77,39 @@ function createActionScaffold(strings, feature, action) {
       base.actions[feature] = base.actions[feature] || {};
 
       return {
-        ...(base as any),
+        ...base,
         actions: {
-          ...(base.actions as any),
+          ...base.actions,
           [feature]: {
-            ...(base.actions[feature] as any),
+            ...base.actions[feature],
             [action]: method
           }
         }
       };
     }),
-    update: strings[feature].status.reduce(
-      (acc, state) => ({
-        ...(acc as any),
-        [state]: createReducerScaffold(strings, feature, action, state)
+    update: Object.assign(
+      createLogicDecorator(feature, strings[feature], (method, base) => {
+        base.statusReducers = base.statusReducers || {};
+        base.statusReducers[feature] = base.statusReducers[feature] || {};
+
+        return {
+          ...base,
+          statusReducers: {
+            ...base.statusReducers,
+            [feature]: {
+              ...base.statusReducers[feature],
+              [action]: method
+            }
+          }
+        };
       }),
-      {}
+      strings[feature].status.reduce(
+        (acc, state) => ({
+          ...(acc as any),
+          [state]: createReducerScaffold(strings, feature, action, state)
+        }),
+        {}
+      )
     )
   };
 }
@@ -123,18 +134,18 @@ function createUtilityScaffold(strings, feature, utility) {
 
 function createReducerScaffold(strings, feature, action, state) {
   return createLogicDecorator(feature, strings[feature], (method, base) => {
-    base.reducers = base.reducers || {};
-    base.reducers[feature] = base.reducers[feature] || {};
-    (base.reducers[feature] as any)[action] =
-      (base.reducers[feature] as any)[action] || {};
+    base.valueReducers = base.valueReducers || {};
+    base.valueReducers[feature] = base.valueReducers[feature] || {};
+    (base.valueReducers[feature] as any)[action] =
+      (base.valueReducers[feature] as any)[action] || {};
 
     return {
       ...(base as any),
-      reducers: {
+      valueReducers: {
         [feature]: {
-          ...(base.reducers[feature] as any),
+          ...(base.valueReducers[feature] as any),
           [action]: {
-            ...((base.reducers[feature] as any)[action] as any),
+            ...((base.valueReducers[feature] as any)[action] as any),
             [state]: method
           }
         }

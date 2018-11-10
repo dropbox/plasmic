@@ -1,15 +1,13 @@
 import * as React from "react";
-import { AutocompleteFeature } from "../types";
-import { Layer, reactContainerLayer } from "../../../core";
+import { AutocompleteScope } from "../types";
+import { Layer, containerRegion } from "../../../core";
 import { AutocompleteLayer } from "../logic/autocomplete";
 
-export type AutocompleteScope = {
-  autocomplete: AutocompleteFeature;
-};
+export type AutocompleteScope = AutocompleteScope;
 
 export interface Autocomplete extends Layer<AutocompleteScope> {}
 
-@reactContainerLayer
+@containerRegion
 export class Autocomplete extends React.Component {
   defaultStatus = {
     autocomplete: {
@@ -55,6 +53,7 @@ export class Autocomplete extends React.Component {
       return (
         <input
           value={value}
+          onChange={() => {}}
           onFocus={() => {
             focus();
           }}

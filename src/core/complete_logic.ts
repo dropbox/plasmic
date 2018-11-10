@@ -1,22 +1,26 @@
 import {
   Scope,
   Logic,
-  Reducers,
+  ValueReducers,
   Actions,
   Observers,
   Value,
   ScopeStrings,
   PartialLogic,
-  Reducer,
+  ValueReducer,
   Action,
   Observer,
   StatusShape,
   Utilities,
-  Utility
+  Utility,
+  StatusReducers,
+  StatusReducer
 } from "./types";
+import { Layer } from "./layer";
 
 export class CompleteLogic<S extends Scope> implements Logic<S> {
-  reducers: Reducers<S>;
+  valueReducers: ValueReducers<S>;
+  statusReducers: StatusReducers<S>;
   actions: Actions<S>;
   observers: Observers<S>;
   utilities: Utilities<S>;
@@ -37,15 +41,57 @@ export class CompleteLogic<S extends Scope> implements Logic<S> {
     };
   }
 
-  constructor(private strings: ScopeStrings<S>, partials: PartialLogic<S>[]) {
-    this.completeReducers(partials);
+  constructor(
+    private strings: ScopeStrings<S>,
+    partials: PartialLogic<S>[],
+    private seed: Layer<S>
+  ) {
+    this.completeStatusReducers(partials);
+    this.completeValueReducers(partials);
     this.completeActions(partials);
     this.completeObservers(partials);
     this.completeUtilities(partials);
   }
 
-  private completeReducers(partials: PartialLogic<S>[]) {
-    this.reducers = Object.keys(this.strings).reduce(
+  private completeStatusReducers(partials: PartialLogic<S>[]) {
+    this.statusReducers = Object.keys(this.strings).reduce(
+      (acc, feature) => ({
+        ...(acc as any),
+        [feature]: this.strings[feature].actions.reduce(
+          (acc, action) => ({
+            ...(acc as any),
+            [action]: partials
+              .filter(partial => {
+                try {
+                  return !!partial.statusReducers[feature][action];
+                } catch {
+                  return false;
+                }
+              })
+              .reduce<StatusReducer>((acc, partial) => {
+                return (v: Value, ...a: Value[]) => {
+                  let next = acc(v, ...a);
+
+                  if (next === undefined) {
+                    next = v;
+                  }
+
+                  return (partial.statusReducers![feature]![action] as any)(
+                    next,
+                    ...a
+                  );
+                };
+              }, CompleteLogic.noopReducer)
+          }),
+          {}
+        )
+      }),
+      {} as StatusReducers<S>
+    );
+  }
+
+  private completeValueReducers(partials: PartialLogic<S>[]) {
+    this.valueReducers = Object.keys(this.strings).reduce(
       (acc, feature) => ({
         ...(acc as any),
         [feature]: this.strings[feature].actions.reduce(
@@ -57,12 +103,12 @@ export class CompleteLogic<S extends Scope> implements Logic<S> {
                 [status]: partials
                   .filter(partial => {
                     try {
-                      return !!partial.reducers[feature][action][status];
+                      return !!partial.valueReducers[feature][action][status];
                     } catch {
                       return false;
                     }
                   })
-                  .reduce<Reducer>((acc, partial) => {
+                  .reduce<ValueReducer>((acc, partial) => {
                     return (v: Value, ...a: Value[]) => {
                       let next = acc(v, ...a);
 
@@ -70,7 +116,7 @@ export class CompleteLogic<S extends Scope> implements Logic<S> {
                         next = v;
                       }
 
-                      return (partial.reducers![feature]![action]![
+                      return (partial.valueReducers![feature]![action]![
                         status
                       ]! as any)(next, ...a);
                     };
@@ -82,7 +128,7 @@ export class CompleteLogic<S extends Scope> implements Logic<S> {
           {}
         )
       }),
-      {} as Reducers<S>
+      {} as ValueReducers<S>
     );
   }
 
@@ -167,7 +213,7 @@ export class CompleteLogic<S extends Scope> implements Logic<S> {
                 feature,
                 utility as string
               );
-              console.warn(message);
+              console.warn(`${message} in:`, this.seed);
               util = CompleteLogic.createThrowsUtility(message);
             }
 

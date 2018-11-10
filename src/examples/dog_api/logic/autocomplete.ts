@@ -1,12 +1,9 @@
-import { autocomplete, AutocompleteFeature } from "../types";
+import { autocomplete, AutocompleteScope } from "../types";
 import { Layer } from "../../../core/layer";
 
-export type AutocompleteLayerScope = {
-  autocomplete: AutocompleteFeature;
-};
+export type AutocompleteLayerScope = AutocompleteScope;
 
-export interface AutocompleteLayer extends Layer<AutocompleteLayerScope> {}
-export class AutocompleteLayer {
+export class AutocompleteLayer extends Layer<AutocompleteLayerScope> {
   @autocomplete.on.focus.update.focused
   onFocusUpdateFocused() {
     return true;
@@ -33,7 +30,7 @@ export class AutocompleteLayer {
   }
 
   @autocomplete.observe
-  triggerRefilter(previous: AutocompleteFeature["status"]) {
+  triggerRefilter(previous: AutocompleteScope["autocomplete"]["status"]) {
     if (previous.value !== this.status.autocomplete.value) {
       this.actions.autocomplete.refilter();
     }

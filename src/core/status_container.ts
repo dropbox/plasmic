@@ -4,8 +4,8 @@ import {
   ScopeStrings,
   Logic,
   Actions,
-  Value,
-  Reducer
+  ActionArgs,
+  ValueReducer
 } from "./types";
 import { log } from "util";
 
@@ -13,8 +13,14 @@ export type SubscriptionHandle = { unsubscribe: () => void };
 
 export class StatusContainer<S extends Scope> {
   private listeners: ((s: Status<S>) => void)[] = [];
+  private _status: Status<S>;
 
-  constructor(private strings: ScopeStrings<S>, private _status: Status<S>) {}
+  constructor(
+    private strings: ScopeStrings<S>,
+    private defaultStatus: Status<S>
+  ) {
+    this._status = defaultStatus;
+  }
 
   public getStatus(): Status<S> {
     return this._status;
@@ -41,24 +47,37 @@ export class StatusContainer<S extends Scope> {
         [feature]: this.strings[feature].actions.reduce(
           (acc, action) => ({
             ...(acc as any),
-            [action]: (...values: Value[]) => {
+            [action]: (
+              ...args: ActionArgs<
+                S[keyof S]["actions"][keyof S[keyof S]["actions"]]
+              >
+            ) => {
               const previous = {
                 ...(this.getStatus() as any)
               };
 
               this.setStatus({
-                [feature]: this.strings[feature].status.reduce(
-                  (acc, state) => ({
-                    ...(acc as any),
-                    [state]: (logic.reducers[feature][action][
-                      state
-                    ] as Reducer)(this.getStatus()[feature][state], ...values)
-                  }),
-                  this.getStatus()[feature]
-                )
+                [feature]: {
+                  ...previous[feature],
+                  ...(logic.statusReducers[feature][action](
+                    this.strings[feature].status.reduce(
+                      (acc, state) => ({
+                        ...(acc as any),
+                        [state]: (logic.valueReducers[feature][action][
+                          state
+                        ] as ValueReducer)(
+                          this.getStatus()[feature][state],
+                          ...args
+                        )
+                      }),
+                      this.getStatus()[feature]
+                    ),
+                    ...args
+                  ) as any)
+                }
               } as Partial<Status<S>>);
 
-              logic.actions[feature][action](previous[feature], ...values);
+              logic.actions[feature][action](previous[feature], ...args);
               logic.observers[feature](previous[feature]);
 
               this.updateSubscribers(feature);

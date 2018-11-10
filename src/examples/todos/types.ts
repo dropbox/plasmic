@@ -9,37 +9,40 @@ export type Filter = Completed | null;
 export type Todo<Data = {}> = {
   id: Id;
   label: Label;
+  priority: number;
   completed: Completed;
   data: Data;
 };
 
-export type TodosFeature<Data = {}> = Feature<
-  {
-    addTodo: (label: Label, data?: Data) => void;
-    toggleCompleted: (id: Id) => void;
-    deleteTodo: (id: Id) => void;
-    updateFilter: (filter: Filter) => void;
-    refilter: () => void;
-  },
-  {
-    allTodos: Todo<Data>[];
-    filteredTodos: Todo<Data>[];
-    currentFilter: Filter;
-    nextId: number;
-  },
-  {
-    renderTodo: (todo: Todo<Data>) => JSX.Element | string;
-  }
->;
+export type TodosScope<Data = {}> = {
+  todos: {
+    actions: {
+      addTodo: (label: Label, data?: Data) => void;
+      toggleCompleted: (id: Id) => void;
+      deleteTodo: (id: Id) => void;
+      prioritize: (id: Id, priority: number) => void;
+      updateFilter: (filter: Filter) => void;
+      refilter: () => void;
+    };
+    status: {
+      allTodos: Todo<Data>[];
+      filteredTodos: Todo<Data>[];
+      currentFilter: Filter;
+      nextId: number;
+    };
+    utilities: {
+      renderTodo: (todo: Todo<Data>) => JSX.Element | string;
+    };
+  };
+};
 
-export const { todos } = createLogicDecorators<{
-  todos: TodosFeature;
-}>({
+export const { todos } = createLogicDecorators<TodosScope>({
   todos: {
     actions: [
       "addTodo",
       "toggleCompleted",
       "deleteTodo",
+      "prioritize",
       "refilter",
       "updateFilter"
     ],

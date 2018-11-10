@@ -1,16 +1,14 @@
 import * as React from "react";
-import { Layer, reactLayer } from "../../../core";
-import { Completed, Id, TodosFeature } from "../types";
+import { Layer, region } from "../../../core";
+import { Completed, Id, TodosScope } from "../types";
 
-export type CheckboxScope = {
-  todos: TodosFeature;
-};
+export type CheckboxScope = TodosScope;
 
 export type CheckboxProps = { id: Id; completed: Completed };
 
 export interface Checkbox extends Layer<CheckboxScope> {}
 
-@reactLayer
+@region
 export class Checkbox extends React.Component<CheckboxProps> {
   onChange = () => {
     this.actions.todos.toggleCompleted(this.props.id);

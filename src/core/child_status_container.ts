@@ -2,12 +2,16 @@ import { StatusContainer } from "./status_container";
 import { Scope, ScopeStrings, Status } from "./types";
 
 export class ChildStatusContainer<S extends Scope> extends StatusContainer<S> {
+  private _childStatus: Partial<Status<S>>;
+
   constructor(
     strings: ScopeStrings<S>,
     private parent: StatusContainer<S>,
-    private _childStatus?: Partial<Status<S>>
+    defaultStatus?: Partial<Status<S>>
   ) {
     super(strings, {} as Status<S>);
+
+    this._childStatus = { ...(defaultStatus as any) };
   }
 
   private get childStatus() {
@@ -24,7 +28,6 @@ export class ChildStatusContainer<S extends Scope> extends StatusContainer<S> {
   setStatus(partial: Partial<Status<S>>) {
     Object.keys(partial).forEach(feature => {
       if (
-        feature in partial &&
         feature in this.childStatus &&
         this.childStatus[feature] !== partial[feature]
       ) {

@@ -1,13 +1,9 @@
 import { Layer } from "../../../core";
-import { todos, Todo, Label, Id, TodosFeature, Completed } from "../types";
+import { todos, Todo, Label, Id, TodosScope } from "../types";
 
-export type ListLayerScope<Data> = {
-  todos: TodosFeature<Data>;
-};
+export type ListLayerScope<Data> = TodosScope<Data>;
 
-export interface ListLayer<Data> extends Layer<ListLayerScope<Data>> {}
-
-export class ListLayer<Data = {}> {
+export class ListLayer<Data = {}> extends Layer<ListLayerScope<Data>> {
   @todos.on.addTodo.update.allTodos
   updateOnAdd(allTodos: Todo[], label: Label, data?: Data) {
     return [
@@ -15,6 +11,7 @@ export class ListLayer<Data = {}> {
       {
         label,
         id: this.status.todos.nextId,
+        priority: 0,
         completed: false,
         data: data || {}
       }
@@ -26,10 +23,11 @@ export class ListLayer<Data = {}> {
     return allTodos.filter(todo => todo.id !== id);
   }
 
-  @todos.on.refilter.update.filteredTodos
-  updateFilteredOnChange() {
-    const filter = this.status.todos.currentFilter;
-    return this.filterTodos(filter);
+  @todos.on.prioritize.update.allTodos
+  updateOnPrioritize(allTodos: Todo[], id: Id, priority: number) {
+    return allTodos.map(todo =>
+      todo.id === id ? { ...todo, priority } : todo
+    );
   }
 
   @todos.on.toggleCompleted.update.allTodos
@@ -44,25 +42,5 @@ export class ListLayer<Data = {}> {
         };
       }
     });
-  }
-
-  @todos.observe
-  triggerRefilter(previous: TodosFeature["status"]) {
-    if (
-      previous.allTodos !== this.status.todos.allTodos ||
-      previous.currentFilter !== this.status.todos.currentFilter
-    ) {
-      this.actions.todos.refilter();
-    }
-  }
-
-  filterTodos(filter: Completed | null) {
-    if (filter === null) {
-      return this.status.todos.allTodos;
-    } else {
-      return this.status.todos.allTodos.filter(
-        todo => todo.completed === filter
-      );
-    }
   }
 }

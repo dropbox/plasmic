@@ -1,16 +1,11 @@
-import { api, ApiFeature, DogResponse, DogList, DogFeature } from "../types";
+import { api, DogResponse, DogList, ApiScope, DogScope } from "../types";
 import { Layer } from "../../../core/layer";
-import { error } from "util";
 
-export type ApiLayerScope = {
-  api: ApiFeature;
-  dog: DogFeature;
-};
+export type ApiLayerScope = ApiScope & DogScope;
 
-export interface ApiLayer extends Layer<ApiLayerScope> {}
-export class ApiLayer {
+export class ApiLayer extends Layer<ApiLayerScope> {
   @api.on.getDog.observe
-  async getDog(previous: ApiFeature["status"], dogType: string) {
+  async getDog(previous: ApiScope["api"]["status"], dogType: string) {
     const url = `https://dog.ceo/api/breed/${dogType}/images/random`;
     const dogResponse: DogResponse | null = await this.doAjax(url);
 
@@ -52,6 +47,7 @@ export class ApiLayer {
 
       if (httpResponse.ok) {
         dogResponse = await httpResponse.json();
+        this.actions.api.setError(null);
       } else {
         const errorResponse: DogResponse = await httpResponse.json();
         this.actions.api.setError(errorResponse.message.toString());

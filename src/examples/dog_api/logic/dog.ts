@@ -1,13 +1,9 @@
-import { dog, Dog, DogList, DogFeature } from "../types";
+import { dog, Dog, DogList, DogScope } from "../types";
 import { Layer } from "../../../core/layer";
 
-export type DogLayerScope = {
-  dog: DogFeature;
-};
+export type DogLayerScope = DogScope;
 
-export interface DogLayer extends Layer<DogLayerScope> {}
-
-export class DogLayer {
+export class DogLayer extends Layer<DogLayerScope> {
   @dog.on.updateDog.update.currentDog
   updateDog(currentDog: Dog, newDog: Dog) {
     return newDog;

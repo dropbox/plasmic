@@ -1,5 +1,5 @@
 {
-  "name": "layers",
+  "name": "plasmic",
   "version": "0.0.1",
   "description": "",
   "main": "./dist/index.js",
@@ -9,17 +9,22 @@
     "build:todos": "webpack --config src/examples/todos/webpack.config.js",
     "build:dog_api": "webpack --config src/examples/dog_api/webpack.config.js",
     "build:todog": "webpack --config src/examples/todog/webpack.config.js",
+    "build:examples": "npm run build:counter && npm run build:todos && npm run build:dog_api &&npm run build:todog",
     "build": "tsc  --outDir ./dist --project ./src/core --declaration",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "start": "npm run build:examples && http-server ./client"
   },
   "dependencies": {
-    "awesome-typescript-loader": "^3.1.2",
-    "react": "^16.6.0",
-    "react-dom": "^16.6.0",
+    "react": "16.6.1",
+    "typescript": "3.1.6",
+    "@types/react": "16.6.1"
+  },
+  "devDependencies": {
     "source-map-loader": "^0.2.1",
-    "typescript": "^3.0.0",
+    "http-server": "0.11.1",
     "webpack": "^2.4.1",
-    "@types/react": "^16.4.18",
+    "react-dom": "^16.6.0",
+    "awesome-typescript-loader": "^3.1.2",
     "@types/react-dom": "^16.0.9"
   },
   "keywords": [],

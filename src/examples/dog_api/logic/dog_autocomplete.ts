@@ -1,35 +1,38 @@
 import {
-  DogFeature,
-  AutocompleteFeature,
+  DogScope,
+  AutocompleteScope,
   dog,
   autocomplete,
-  ApiFeature
+  ApiScope
 } from "../types";
 import { Layer } from "../../../core/layer";
 
-export type DogApiAutocompleteLayerScope = {
-  dog: DogFeature;
-  autocomplete: AutocompleteFeature;
-  api: ApiFeature;
-};
+export type DogApiAutocompleteLayerScope = ApiScope &
+  DogScope &
+  AutocompleteScope;
 
-export interface DogApiAutocompleteLayer
-  extends Layer<DogApiAutocompleteLayerScope> {}
-export class DogApiAutocompleteLayer {
+export class DogApiAutocompleteLayer extends Layer<
+  DogApiAutocompleteLayerScope
+> {
   @dog.observe
-  triggerRefilterFromDog(previous: DogFeature["status"]) {
+  triggerRefilterFromDog(previous: DogScope["dog"]["status"]) {
     if (previous.dogTypes !== this.status.dog.dogTypes) {
       this.actions.autocomplete.refilter();
     }
   }
 
   @autocomplete.observe
-  triggerRefilterFromAutocomplete(previous: AutocompleteFeature["status"]) {
-    if (
-      previous.value !== this.status.autocomplete.value &&
-      this.status.dog.dogTypes.indexOf(this.status.autocomplete.value) !== -1
-    ) {
-      this.actions.api.getDog(this.status.autocomplete.value);
+  triggerRefilterFromAutocomplete(
+    previous: AutocompleteScope["autocomplete"]["status"]
+  ) {
+    if (previous.value !== this.status.autocomplete.value) {
+      if (
+        this.status.dog.dogTypes.indexOf(this.status.autocomplete.value) !== -1
+      ) {
+        this.actions.api.getDog(this.status.autocomplete.value);
+      } else {
+        this.actions.dog.updateDog(null);
+      }
     }
   }
 

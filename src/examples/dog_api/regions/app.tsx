@@ -1,19 +1,15 @@
 import * as React from "react";
-import { composeContainerLayer } from "../../../core/react_container_layer";
-import { DogFeature, ApiFeature } from "../types";
+import { composeContainerRegion } from "../../../core";
+import { DogScope, ApiScope } from "../types";
 import { DogApiAutocomplete } from "./dog_api_autocomplete";
 import { CurrentDogPic } from "./current_dog_pic";
 import { DogLayer } from "../logic/dog";
 import { ApiLayer } from "../logic/api";
 import { Status } from "../../../core/types";
 import { ApiErrorMessage } from "./api_error_message";
-import { LoadingIndicator } from "../components/loading_indicator";
 import { ApiLoadingIndicator } from "./api_loading_indicator";
 
-export type DogApiAppScope = {
-  dog: DogFeature;
-  api: ApiFeature;
-};
+export type DogApiAppScope = DogScope & ApiScope;
 
 export const defaultStatus: Status<DogApiAppScope> = {
   dog: {
@@ -27,8 +23,8 @@ export const defaultStatus: Status<DogApiAppScope> = {
   }
 };
 
-export const DogApiApp = composeContainerLayer<DogApiAppScope>(
-  () => (
+export const DogApiApp = composeContainerRegion({
+  display: () => (
     <React.Fragment>
       <ApiErrorMessage />
       <DogApiAutocomplete />
@@ -36,6 +32,6 @@ export const DogApiApp = composeContainerLayer<DogApiAppScope>(
       <ApiLoadingIndicator />
     </React.Fragment>
   ),
-  [new DogLayer(), new ApiLayer()],
+  layers: [new DogLayer(), new ApiLayer()],
   defaultStatus
-);
+});
