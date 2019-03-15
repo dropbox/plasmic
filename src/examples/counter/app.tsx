@@ -3,7 +3,8 @@ import {
   createLogicDecorators,
   Layer,
   composeRegion,
-  composeContainerRegion
+  composeContainerRegion,
+  containerRegion
 } from "../../core";
 
 export type CounterScope = {
@@ -113,28 +114,33 @@ export type CounterProps = {
   initial?: number;
 };
 
-export const Counter: React.StatelessComponent<
-  CounterProps
-> = composeContainerRegion<CounterScope, CounterProps>({
-  display: ({ status, actions }, { step }) => (
-    <React.Fragment>
-      <span>{status.counter.count}</span>
-      <button onClick={() => actions.counter.increment(step)}>Up</button>
-      <button onClick={() => actions.counter.decrement(step)}>Down</button>
-    </React.Fragment>
-  ),
-  layers: [new CounterReducerLayer()],
-  defaultStatus: (props: CounterProps) => ({
-    counter: {
-      count: props.initial || 0
-    }
-  }),
-  layerShouldInit: (props, nextProps) => {
-    return props.initial !== nextProps.initial;
-  }
-});
+interface Counter extends Layer<CounterScope> {}
+@containerRegion
+class Counter extends React.Component<CounterProps> {
+  layers = [new CounterReducerLayer()];
 
-Counter.displayName = "Counter";
+  defaultStatus = () => ({
+    counter: {
+      count: this.props.initial || 0
+    }
+  });
+
+  render() {
+    const {
+      actions,
+      status,
+      props: { step }
+    } = this;
+
+    return (
+      <React.Fragment>
+        <span>{status.counter.count}</span>
+        <button onClick={() => actions.counter.increment(step)}>Up</button>
+        <button onClick={() => actions.counter.decrement(step)}>Down</button>
+      </React.Fragment>
+    );
+  }
+}
 
 export const App = composeContainerRegion<LoggingScope>({
   display: () => {

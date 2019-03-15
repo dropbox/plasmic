@@ -1,9 +1,14 @@
 const path = require("path");
 
 module.exports = {
-  entry: "./src/examples/todog/index.tsx",
+  entry: {
+    counter: "./src/examples/counter/index.tsx",
+    dog_api: "./src/examples/dog_api/index.tsx",
+    todos: "./src/examples/todos/index.tsx",
+    todog: "./src/examples/todog/index.tsx"
+  },
   output: {
-    filename: "todog.js",
+    filename: "[name].js",
     path: path.resolve("./client/public")
   },
 
